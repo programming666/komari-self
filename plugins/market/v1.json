@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "plugins": [
+    {
+      "name": {
+        "en": "UI Polish",
+        "zh-CN": "界面美化",
+        "zh-TW": "介面美化",
+        "ja": "UI ポリッシュ"
+      },
+      "short": "ui-polish",
+      "description": {
+        "en": "A visual polish pack for the Komari web UI: ambient accent background, glass navbar, softer cards, tables and overlays, themed scrollbars and a single-accent loading spinner. Injects CSS only — no layout or behaviour changes.",
+        "zh-CN": "Komari 网页界面美化包：跟随主题色的氛围背景、毛玻璃导航栏、更柔和的卡片/表格/弹层、主题化滚动条，以及单一主题色的加载动画。只注入 CSS，不改动布局与行为。",
+        "zh-TW": "Komari 網頁介面美化包：跟隨主題色的氛圍背景、毛玻璃導覽列、更柔和的卡片/表格/彈層、主題化捲軸，以及單一主題色的載入動畫。只注入 CSS，不改動版面與行為。",
+        "ja": "Komari の Web UI 向けビジュアル調整パック。アクセントカラーに追従する背景のグラデーション、ガラス風ナビゲーションバー、やわらかいカード/テーブル/オーバーレイ、テーマ付きスクロールバー、単色のローディングスピナーを含みます。CSS の注入のみで、レイアウトや動作は変更しません。"
+      },
+      "version": "1.0.0",
+      "author": {
+        "en": "programming666",
+        "zh-CN": "programming666"
+      },
+      "url": "https://github.com/programming666/komari-self",
+      "download": "https://github.com/programming666/komari-self/releases/download/ui-polish-v1.0.0/ui-polish-1.0.0.zip",
+      "sha256": "e77cacc626061622a5ef6b11b884e74c962ac3433bad901d0b8b204cf9b349b7",
+      "komari": ">=0.0.1"
+    }
+  ]
+}

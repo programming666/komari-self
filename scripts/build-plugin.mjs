@@ -55,11 +55,20 @@ function crc32(buf) {
   return (c ^ -1) >>> 0;
 }
 
-function dosDateTime(date) {
-  const time = (date.getHours() << 11) | (date.getMinutes() << 5) | (date.getSeconds() >> 1);
-  const day = ((date.getFullYear() - 1980) << 9) | ((date.getMonth() + 1) << 5) | date.getDate();
+/**
+ * Fixed DOS timestamp used for every entry, so the same sources always pack into
+ * the same bytes. A plugin published to a market catalog is referenced by its
+ * sha256, which only means anything if the archive is reproducible. Set
+ * SOURCE_DATE_EPOCH to override the default (2020-01-01 00:00:00).
+ */
+const DOS_TIMESTAMP = (() => {
+  const epoch = Number(process.env.SOURCE_DATE_EPOCH);
+  const date = Number.isFinite(epoch) && epoch > 0 ? new Date(epoch * 1000) : new Date(Date.UTC(2020, 0, 1));
+  const time = (date.getUTCHours() << 11) | (date.getUTCMinutes() << 5) | (date.getUTCSeconds() >> 1);
+  const day =
+    ((date.getUTCFullYear() - 1980) << 9) | ((date.getUTCMonth() + 1) << 5) | date.getUTCDate();
   return { time: time & 0xffff, day: day & 0xffff };
-}
+})();
 
 /** Every file under dir (skipping `skip`), as { name, path } with / separators. */
 function collectFiles(dir, skip) {
@@ -88,7 +97,7 @@ function buildZip(files) {
     const data = readFileSync(file.path);
     const packed = deflateRawSync(data, { level: 9 });
     const sum = crc32(data);
-    const { time, day } = dosDateTime(statSync(file.path).mtime);
+    const { time, day } = DOS_TIMESTAMP;
 
     const header = Buffer.alloc(30);
     header.writeUInt32LE(0x04034b50, 0); // local file header
