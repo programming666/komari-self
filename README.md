@@ -3,6 +3,17 @@
 ![Badge](https://hitscounter.dev/api/hit?url=https%3A%2F%2Fgithub.com%2Fkomari-monitor%2Fkomari&label=&icon=github&color=%23a370f7&message=&style=flat&tz=UTC)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/komari-monitor/komari)
 
+
+---
+
+**本仓库是 [komari-monitor/komari](https://github.com/komari-monitor/komari) 的个人分支**：
+
+- 界面做过一轮视觉美化（氛围背景、毛玻璃导航栏、卡片/表格/弹层的阴影与圆角、主题化滚动条、主题色加载动画），
+  前端源码与构建产物一并纳入仓库，克隆后直接 `go build` 即可得到美化版；
+- 同一套视觉层也打包成了 **Komari 插件** [`plugins/komari-ui-polish`](plugins/komari-ui-polish/README.md)，
+  **不需要重新编译**，装到任意 Komari 实例上即可生效，开关都在后台的插件配置页里。
+
+改动清单与构建方式见 [`SELF-FORK.md`](SELF-FORK.md)。
 ![komari](https://socialify.git.ci/komari-monitor/komari/image?description=1&font=Inter&forks=1&issues=1&language=1&logo=https%3A%2F%2Fraw.githubusercontent.com%2Fkomari-monitor%2Fkomari-web%2Fd54ce1288df41ead08aa19f8700186e68028a889%2Fpublic%2Ffavicon.png&name=1&owner=1&pattern=Plus&pulls=1&stargazers=1&theme=Auto)
 
 [English](./README.md) | [简体中文](./README_zh-cn.md)

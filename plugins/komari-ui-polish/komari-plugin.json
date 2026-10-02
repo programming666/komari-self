@@ -1,0 +1,220 @@
+{
+  "name": {
+    "en": "UI Polish",
+    "zh-CN": "界面美化",
+    "zh-TW": "介面美化",
+    "ja": "UI ポリッシュ"
+  },
+  "short": "ui-polish",
+  "description": {
+    "en": "A visual polish pack for the Komari web UI: ambient accent background, glass navbar, softer cards, tables and overlays, themed scrollbars and a single-accent loading spinner. Injects CSS only — no layout or behaviour changes.",
+    "zh-CN": "Komari 网页界面美化包：跟随主题色的氛围背景、毛玻璃导航栏、更柔和的卡片/表格/弹层、主题化滚动条，以及单一主题色的加载动画。只注入 CSS，不改动布局与行为。",
+    "zh-TW": "Komari 網頁介面美化包：跟隨主題色的氛圍背景、毛玻璃導覽列、更柔和的卡片/表格/彈層、主題化捲軸，以及單一主題色的載入動畫。只注入 CSS，不改動版面與行為。",
+    "ja": "Komari の Web UI 向けビジュアル調整パック。アクセントカラーに追従する背景のグラデーション、ガラス風ナビゲーションバー、やわらかいカード/テーブル/オーバーレイ、テーマ付きスクロールバー、単色のローディングスピナーを含みます。CSS の注入のみで、レイアウトや動作は変更しません。"
+  },
+  "author": {
+    "en": "programming666",
+    "zh-CN": "programming666"
+  },
+  "version": "1.0.0",
+  "url": "https://github.com/programming666/komari-self",
+  "icon": "icon.svg",
+  "komari": ">=0.0.1",
+  "entry": "script.js",
+  "permissions": {
+    "allowHTMLInject": true
+  },
+  "configuration": {
+    "type": "managed",
+    "name": {
+      "en": "UI Polish settings",
+      "zh-CN": "界面美化设置",
+      "ja": "UI ポリッシュ設定"
+    },
+    "data": [
+      {
+        "type": "title",
+        "name": {
+          "en": "Global",
+          "zh-CN": "全局",
+          "ja": "全体"
+        }
+      },
+      {
+        "key": "radius",
+        "type": "select",
+        "options": "soft,stock,round",
+        "default": "soft",
+        "name": {
+          "en": "Corner radius",
+          "zh-CN": "圆角风格",
+          "ja": "角丸スタイル"
+        },
+        "help": {
+          "en": "soft: slightly rounder containers (default); stock: keep the theme's own radius scale, nothing exaggerated; round: visibly rounder cards. The theme's radius and scaling settings still apply.",
+          "zh-CN": "soft：容器略微更圆（默认）；stock：沿用主题自带的圆角尺度，不做放大；round：卡片明显更圆。主题自身的圆角与缩放设置仍然生效。",
+          "ja": "soft：やや丸め（既定）、stock：テーマ本来の角丸スケールをそのまま使用、round：はっきり丸め。テーマの角丸・拡大設定は引き続き有効です。"
+        }
+      },
+      {
+        "key": "numerals",
+        "type": "switch",
+        "default": true,
+        "name": {
+          "en": "Fixed-width digits",
+          "zh-CN": "等宽数字",
+          "ja": "等幅数字"
+        },
+        "help": {
+          "en": "Use tabular numerals for live metrics so counters stop jittering as they update.",
+          "zh-CN": "实时指标使用等宽数字，更新时数字不会左右抖动。",
+          "ja": "リアルタイム指標に等幅数字を使い、更新時のガタつきを防ぎます。"
+        }
+      },
+      {
+        "key": "scrollbar",
+        "type": "switch",
+        "default": true,
+        "name": {
+          "en": "Slim themed scrollbars",
+          "zh-CN": "主题化滚动条",
+          "ja": "テーマ付きスクロールバー"
+        },
+        "help": {
+          "en": "Thinner scrollbars that highlight in the accent colour on hover.",
+          "zh-CN": "更细的滚动条，悬停时变为主题强调色。",
+          "ja": "細めのスクロールバー。ホバー時にアクセントカラーになります。"
+        }
+      },
+      {
+        "key": "motion",
+        "type": "switch",
+        "default": true,
+        "name": {
+          "en": "Entrance animation",
+          "zh-CN": "入场动效",
+          "ja": "入場アニメーション"
+        },
+        "help": {
+          "en": "Node cards fade and rise in on load. Always disabled when the visitor's system asks for reduced motion.",
+          "zh-CN": "节点卡片加载时淡入上浮。访客系统开启“减少动态效果”时始终禁用。",
+          "ja": "読み込み時にカードがフェードインします。OS の「視差効果を減らす」設定時は常に無効です。"
+        }
+      },
+      {
+        "type": "title",
+        "name": {
+          "en": "Regions",
+          "zh-CN": "区域",
+          "ja": "領域"
+        }
+      },
+      {
+        "key": "ambient",
+        "type": "switch",
+        "default": true,
+        "name": {
+          "en": "Ambient background",
+          "zh-CN": "氛围背景",
+          "ja": "背景グラデーション"
+        },
+        "help": {
+          "en": "Soft accent-coloured wash behind every page, public and admin. A custom background image set in the theme settings still shows through.",
+          "zh-CN": "前台与后台统一叠加跟随主题色的柔和渐变。主题设置里自定义的背景图仍会正常显示。",
+          "ja": "公開ページと管理画面の両方に、アクセントカラーの淡いグラデーションを敷きます。テーマ設定の背景画像はそのまま表示されます。"
+        }
+      },
+      {
+        "key": "ambientIntensity",
+        "type": "select",
+        "options": "subtle,standard,strong",
+        "default": "standard",
+        "name": {
+          "en": "Ambient intensity",
+          "zh-CN": "氛围强度",
+          "ja": "グラデーションの強さ"
+        },
+        "help": {
+          "en": "How strong the accent wash is. Only used when the ambient background is enabled.",
+          "zh-CN": "渐变的浓淡。仅在开启氛围背景时生效。",
+          "ja": "グラデーションの濃さ。背景グラデーションが有効なときのみ反映されます。"
+        }
+      },
+      {
+        "key": "glass",
+        "type": "switch",
+        "default": true,
+        "name": {
+          "en": "Glass navbar and toolbars",
+          "zh-CN": "毛玻璃导航栏",
+          "ja": "ガラス風ナビゲーションバー"
+        },
+        "help": {
+          "en": "Sticky translucent navbar, node-list toolbar and footer, plus the gradient wordmark.",
+          "zh-CN": "吸顶半透明导航栏、节点列表工具条与页脚，以及渐变站点标题。",
+          "ja": "半透明の固定ナビゲーションバー、ツールバー、フッターとグラデーションのロゴ。"
+        }
+      },
+      {
+        "key": "elevation",
+        "type": "switch",
+        "default": true,
+        "name": {
+          "en": "Cards and overlays",
+          "zh-CN": "卡片与弹层",
+          "ja": "カードとオーバーレイ"
+        },
+        "help": {
+          "en": "Layered shadows and rounded corners for cards, node tiles, usage bars, dialogs and popovers.",
+          "zh-CN": "为卡片、节点卡、用量条、对话框与浮层加上分层阴影和圆角。",
+          "ja": "カード、ノードタイル、使用率バー、ダイアログ、ポップオーバーに立体感を付けます。"
+        }
+      },
+      {
+        "key": "tables",
+        "type": "switch",
+        "default": true,
+        "name": {
+          "en": "Tables",
+          "zh-CN": "表格",
+          "ja": "テーブル"
+        },
+        "help": {
+          "en": "Card-like tables with an accent-tinted header and row hover feedback.",
+          "zh-CN": "表格卡片化：强调色表头与行悬停反馈。",
+          "ja": "カード風のテーブル。アクセントカラーのヘッダーと行ホバー。"
+        }
+      },
+      {
+        "key": "adminShell",
+        "type": "switch",
+        "default": true,
+        "name": {
+          "en": "Transparent admin shell",
+          "zh-CN": "后台内容区透明",
+          "ja": "管理画面の透過"
+        },
+        "help": {
+          "en": "Let the ambient background show through the admin panel instead of its own flat fill, so both look the same.",
+          "zh-CN": "让后台内容区透出氛围背景，而不是它自带的纯色填充，使前后台观感一致。",
+          "ja": "管理画面の単色背景を透過させ、公開ページと同じ背景を見せます。"
+        }
+      },
+      {
+        "key": "loader",
+        "type": "switch",
+        "default": true,
+        "name": {
+          "en": "Loading spinner",
+          "zh-CN": "加载动画",
+          "ja": "ローディング表示"
+        },
+        "help": {
+          "en": "Replace the four-colour brand spinner with a single-accent ring on a faint track.",
+          "zh-CN": "把原来的四色（红蓝绿黄）转圈换成跟随主题色的圆环与淡色轨道。",
+          "ja": "4 色のスピナーを、アクセントカラーのリングのみに置き換えます。"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="UI Polish">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6E56CF" />
+      <stop offset="1" stop-color="#12A594" />
+    </linearGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.45" />
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+  <rect x="3" y="3" width="58" height="58" rx="16" fill="url(#bg)" />
+  <rect x="3" y="3" width="58" height="58" rx="16" fill="url(#gloss)" />
+  <path
+    d="M24 14l2.6 6.4L33 23l-6.4 2.6L24 32l-2.6-6.4L15 23l6.4-2.6z"
+    fill="#FFFFFF"
+    fill-opacity="0.95"
+  />
+  <path
+    d="M42.5 30l1.9 4.6 4.6 1.9-4.6 1.9-1.9 4.6-1.9-4.6-4.6-1.9 4.6-1.9z"
+    fill="#FFFFFF"
+    fill-opacity="0.8"
+  />
+  <rect x="16" y="44" width="32" height="6" rx="3" fill="#FFFFFF" fill-opacity="0.85" />
+</svg>

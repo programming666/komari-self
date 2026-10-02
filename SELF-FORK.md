@@ -14,6 +14,9 @@
 | `web/public/defaultTheme/dist.tar.zst` | 前端构建产物归档，由 `go:embed` 内嵌。**已提交**，因此克隆后不必先构建前端 |
 | `web/public/defaultTheme/komari-theme.json` | 默认主题元数据 |
 | `scripts/build-default-theme.mjs` | 把 `frontend/dist` 打包成上面的 `dist.tar.zst`（纯 Node，不依赖 zstd CLI） |
+| `plugins/komari-ui-polish/` | 同一套视觉层的 **Komari 插件**版本：装到任意 Komari 实例即可生效，无需改后端或重建前端 |
+| `plugins/market/v1.json` | 插件市场源清单，后台添加该 URL 即可安装 / 更新插件（发布时生成） |
+| `scripts/build-plugin.mjs` | 构建插件：由 `src/` 生成内嵌样式表的 `script.js`，再打成可上传的 zip（纯 Node，不依赖 zip CLI） |
 
 ## 界面预览
 
@@ -37,6 +40,20 @@ go build -o komari .                      # 或 docker build
 ```
 
 `scripts/build-default-theme.mjs` 会检查 `frontend/dist/index.html` 是否存在，缺失即报错退出；
+
+## 作为插件使用（推荐给别人的方式）
+
+上面那套视觉层同时做成了一枚 Komari 插件，装到**任意** Komari 实例即可生效 ——
+不需要本仓库的后端改动，也不需要重建前端：
+
+```bash
+node scripts/build-plugin.mjs      # 生成 plugins/komari-ui-polish/dist/ui-polish-1.0.0.zip
+```
+
+然后在后台 → 插件 → 上传该 zip → 批准权限（只申请 HTML 注入）并启用。
+插件把样式注入到每个 HTML 响应的 `</head>` 之前，因此在同等优先级下覆盖打包样式表；
+全部开关（氛围背景、毛玻璃导航栏、卡片阴影、圆角风格、加载动画…）都在后台的插件配置页里，
+保存后插件自动重载。细节见 [`plugins/komari-ui-polish/README.md`](plugins/komari-ui-polish/README.md)。
 产物大小会在结束时打印出来。
 
 ## 这一轮界面美化改了什么
