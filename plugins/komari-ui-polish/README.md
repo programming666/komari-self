@@ -40,7 +40,11 @@ version    1.0.0
 ### 方式一：后台上传（推荐）
 
 1. 从 [Releases](https://github.com/programming666/komari-self/releases/tag/ui-polish-v1.0.0) 下载 `ui-polish-1.0.0.zip`（或直接用仓库里的 `dist/ui-polish-1.0.0.zip`），后台 → **插件** → 上传插件
-2. 在插件列表里**批准权限并启用**（只请求 HTML 注入）
+2. 打开插件开关时会弹出 **Permission required** 对话框，里面**只有一项** ——
+   `Embed CSS/JS into every HTML page`（把 CSS/JS 嵌入每个 HTML 页面），点 **Approve & Enable** 即可；
+   除此之外它只用默认权限（读自身配置、注册插件 RPC、在自身目录内读写文件）
+
+![Permission required 对话框](../../docs/screenshots/plugin-permission-dialog.png)
 3. 刷新页面即可看到效果
 
 ### 方式二：插件市场
