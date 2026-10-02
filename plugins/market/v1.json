@@ -22,7 +22,7 @@
       },
       "url": "https://github.com/programming666/komari-self",
       "download": "https://github.com/programming666/komari-self/releases/download/ui-polish-v1.0.0/ui-polish-1.0.0.zip",
-      "sha256": "e77cacc626061622a5ef6b11b884e74c962ac3433bad901d0b8b204cf9b349b7",
+      "sha256": "9d8039a4cd645ac1a29a3d400997ffd359548a60791316cef0c96bcabc1182c8",
       "komari": ">=0.0.1"
     }
   ]

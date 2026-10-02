@@ -29,7 +29,7 @@ import {
   statSync,
   writeFileSync,
 } from "node:fs";
-import { dirname, join, relative, resolve, sep } from "node:path";
+import { dirname, extname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { deflateRawSync } from "node:zlib";
 
@@ -70,6 +70,22 @@ const DOS_TIMESTAMP = (() => {
   return { time: time & 0xffff, day: day & 0xffff };
 })();
 
+/**
+ * Line endings must not leak into the archive: the sha256 published in a market
+ * catalog is verified by the server at install time, so packing the same sources
+ * on a machine with core.autocrlf=true has to yield the same bytes as anywhere
+ * else. Text entries are therefore normalised to LF here, which makes the build
+ * independent of how git checked the tree out.
+ */
+const TEXT_EXTENSIONS = new Set([".css", ".html", ".js", ".json", ".md", ".svg", ".txt", ".yml", ".yaml"]);
+
+function packData(name, data) {
+  if (!TEXT_EXTENSIONS.has(extname(name).toLowerCase())) return data;
+  // Normalise CRLF to LF so the archive does not depend on how git checked the
+  // tree out (core.autocrlf would otherwise change the archive hash per machine).
+  return Buffer.from(data.toString("utf8").replace(/\r\n/g, "\n"), "utf8");
+}
+
 /** Every file under dir (skipping `skip`), as { name, path } with / separators. */
 function collectFiles(dir, skip) {
   const out = [];
@@ -94,7 +110,7 @@ function buildZip(files) {
 
   for (const file of files) {
     const name = Buffer.from(file.name, "utf8");
-    const data = readFileSync(file.path);
+    const data = packData(file.name, readFileSync(file.path));
     const packed = deflateRawSync(data, { level: 9 });
     const sum = crc32(data);
     const { time, day } = DOS_TIMESTAMP;
@@ -154,7 +170,7 @@ function buildZip(files) {
 // Step 1 — generate the plugin entry
 // ---------------------------------------------------------------------------
 
-function generateEntry(pluginDir) {
+function generateEntry(pluginDir, write) {
   const srcDir = join(pluginDir, "src");
   const entryFile = join(srcDir, "entry.js");
   const cssFile = join(srcDir, "ui-polish.css");
@@ -166,8 +182,12 @@ function generateEntry(pluginDir) {
     }
   }
 
-  const css = readFileSync(cssFile, "utf8");
-  const entry = readFileSync(entryFile, "utf8");
+  // Sources are normalised before they are embedded: a CRLF checkout would otherwise
+  // bake \r into the generated script.js (inside the JSON-encoded stylesheet), and the
+  // published archive hash would depend on the machine that built it.
+  const lf = (text) => text.replace(/\r\n/g, "\n");
+  const css = lf(readFileSync(cssFile, "utf8"));
+  const entry = lf(readFileSync(entryFile, "utf8"));
 
   // The stylesheet ends up inside a <style> element, so it must not be able to
   // close that element early.
@@ -194,6 +214,7 @@ function generateEntry(pluginDir) {
   ].join("\n");
 
   const outFile = join(pluginDir, "script.js");
+  if (!write) return { outFile, cssLength: css.length, entryLength: out.length };
   writeFileSync(outFile, out);
 
   // Cheap syntax gate: a broken entry would only surface at plugin load time.
@@ -212,6 +233,7 @@ const flag = (name) => {
   return i === -1 ? undefined : argv[i + 1];
 };
 const positional = argv.filter((a, i) => !a.startsWith("--") && !argv[i - 1]?.startsWith("--"));
+const check = argv.includes("--check");
 
 const pluginDir = resolve(positional[0] ?? join(repoRoot, "plugins", "komari-ui-polish"));
 const manifest = JSON.parse(readFileSync(join(pluginDir, "komari-plugin.json"), "utf8"));
@@ -223,7 +245,7 @@ if (!short || !version) {
   process.exit(1);
 }
 
-const generated = generateEntry(pluginDir);
+const generated = generateEntry(pluginDir, !check);
 
 const outFile = resolve(flag("--out") ?? join(pluginDir, "dist", `${short}-${version}.zip`));
 const kb = (n) => `${(n / 1024).toFixed(1)} KiB`;
@@ -233,11 +255,40 @@ const kb = (n) => `${(n / 1024).toFixed(1)} KiB`;
 const files = collectFiles(pluginDir, new Set(["dist", "src", "node_modules", ".git"]));
 const zip = buildZip(files);
 
-mkdirSync(dirname(outFile), { recursive: true });
-writeFileSync(outFile, zip);
-
 const sha256 = createHash("sha256").update(zip).digest("hex");
 
+// --check: rebuild in memory and compare against what is committed, instead of
+// writing anything. Catches the silent drift that bit us once already — editing
+// a file that ships inside the archive (the README) after packing it.
+if (check) {
+  const catalogFile = resolve(flag("--market") ?? join(repoRoot, "plugins", "market", "v1.json"));
+  const problems = [];
+  const committed = statSync(outFile, { throwIfNoEntry: false })
+    ? createHash("sha256").update(readFileSync(outFile)).digest("hex")
+    : null;
+  const catalog = statSync(catalogFile, { throwIfNoEntry: false })
+    ? (JSON.parse(readFileSync(catalogFile, "utf8")).plugins ?? []).find((p) => p.short === short)
+    : null;
+
+  console.log(`${short} ${version} — consistency check`);
+  console.log(`  rebuilt  ${sha256}`);
+  console.log(`  dist     ${committed ?? "(missing)"}  ${committed === sha256 ? "ok" : "STALE"}`);
+  console.log(`  catalog  ${catalog?.sha256 ?? "(no entry)"}  ${catalog?.sha256 === sha256 ? "ok" : "MISMATCH"}`);
+  console.log(`  release  ${sha256}  (compare with the asset at the catalog's download URL)`);
+
+  if (committed !== sha256) {
+    problems.push(`the archive in dist/ is stale — rerun without --check and commit it`);
+  }
+  if (catalog?.sha256 !== sha256) {
+    problems.push(`${relative(repoRoot, catalogFile)} does not carry this archive's sha256 — regenerate it with --market, and re-upload the release asset`);
+  }
+
+  for (const problem of problems) console.error(`  ! ${problem}`);
+  process.exit(problems.length ? 1 : 0);
+}
+
+mkdirSync(dirname(outFile), { recursive: true });
+writeFileSync(outFile, zip);
 console.log(`${short} ${version}`);
 console.log(`  entry    ${relative(pluginDir, generated.outFile)} (${kb(generated.entryLength)}, css ${kb(generated.cssLength)})`);
 console.log(`  archive  ${outFile} (${kb(zip.length)})`);

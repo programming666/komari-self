@@ -145,7 +145,14 @@ node scripts/build-plugin.mjs --market plugins/market/v1.json \
    ```
 
    后台已添加该市场源的实例随即能看到新版本。`sha256` 必须与实际发行的 zip 一致 —— 安装时
-   服务端会校验它，而打包已固定时间戳，所以同一份源码永远得到同一个 zip 与同一个哈希。
+   服务端会校验它，而打包已固定时间戳并把行尾归一，所以同一份源码在任何机器上构建都得到
+   同一个 zip 与同一个哈希。
+5. 最后用 `node scripts/build-plugin.mjs --check` 自查一次：它会重算哈希并与已提交的 dist 包、
+   市场清单对比，不一致就非零退出。**README 也在包里**，所以改完文档要重新构建再提交，
+   否则包里会留着一份旧文档（这个自检就是为抓这种情况加的）。
+
+> 注：本仓库的 Release 同时会被上游 CI 挂上 Komari 的应用二进制；插件包与它们互不影响。
+> 替换插件附件时按**文件名**定位 asset id（不能按下标取，列表里还有那些二进制）。
 
 ## 验证情况
 
@@ -176,8 +183,28 @@ node scripts/build-plugin.mjs --market plugins/market/v1.json \
 [ui-polish] injected 18 KiB of CSS; sections: numerals, ambient, glass, elevation, tables, adminShell, scrollbar, motion, loader
 ```
 
-安装后的 4 个文件与发行包内的条目**逐字节一致**；发行包哈希 `e77cacc6…` 与市场清单里的 `sha256`、
-以及本地重新构建的结果三者相同（打包已固定时间戳，可复现；市场安装时服务端也会校验该哈希）。
+安装后的 4 个文件与发行包内的条目**逐字节一致**；发行包哈希 `sha256:d507f4d1…` 与市场清单里的
+`sha256`、以及本地重新构建的结果三者相同（市场安装时服务端会校验该哈希，不符即拒绝安装）。
+
+打包是**可复现**的：ZIP 条目使用固定时间戳（可用 `SOURCE_DATE_EPOCH` 覆盖），文本文件与
+由 `src/` 生成的入口都会先把 CRLF 归一成 LF —— 因此在 `core.autocrlf=true` 的 Windows 检出和
+普通 Linux 检出里构建，得到的是同一个 zip 与同一个哈希（这一点是实测出来的：最初两边相差
+1346 字节，原因是 CRLF 被编进了内嵌样式表）。
+
+构建脚本带自检，可在提交前确认仓库里的一致状态：
+
+```
+$ node scripts/build-plugin.mjs --check
+ui-polish 1.0.0 — consistency check
+  rebuilt  d507f4d1e7eb0c5c2b176e79d05502c2b981078a136f80e2a69b9c7ec20b35eb
+  dist     d507f4d1e7eb0c5c2b176e79d05502c2b981078a136f80e2a69b9c7ec20b35eb  ok
+  catalog  d507f4d1e7eb0c5c2b176e79d05502c2b981078a136f80e2a69b9c7ec20b35eb  ok
+  release  d507f4d1e7eb0c5c2b176e79d05502c2b981078a136f80e2a69b9c7ec20b35eb  (compare with the asset at the catalog's download URL)
+```
+
+它不写文件，只把「重新构建的结果」与「已提交的 dist 包、市场清单」对一遍；不一致时以非零退出码
+退出并指出该怎么做。这个自检抓到过一次真实漂移：打包之后又改了 README（README 也在包里），
+于是 dist 里的包与源码不再对应。
 
 ## 已知边界
 
