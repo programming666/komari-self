@@ -170,6 +170,37 @@ function buildZip(files) {
 // Step 1 — generate the plugin entry
 // ---------------------------------------------------------------------------
 
+/**
+ * Cheap structural gate for the stylesheet. CSS error recovery is silent, so a
+ * stray declaration (a replacement edit that ate the opening `.selector {` line)
+ * or an unbalanced brace would ship as an archive that installs cleanly and just
+ * renders nothing. Both are caught here instead.
+ */
+function validateCss(css, label) {
+  const problems = [];
+  let depth = 0;
+
+  css.split("\n").forEach((line, index) => {
+    const text = line.trim();
+    if (/^--[\w-]+\s*:/.test(text) && depth === 0) {
+      problems.push(`line ${index + 1}: declaration outside any rule — ${text.slice(0, 60)}`);
+    }
+    depth += (line.match(/\{/g) ?? []).length - (line.match(/\}/g) ?? []).length;
+    if (depth < 0) {
+      problems.push(`line ${index + 1}: unbalanced closing brace`);
+      depth = 0;
+    }
+  });
+
+  if (depth !== 0) problems.push(`unbalanced braces at end of file (depth ${depth})`);
+
+  if (problems.length) {
+    console.error(`${label} is not well formed:`);
+    for (const problem of problems) console.error(`  ! ${problem}`);
+    process.exit(1);
+  }
+}
+
 function generateEntry(pluginDir, write) {
   const srcDir = join(pluginDir, "src");
   const entryFile = join(srcDir, "entry.js");
@@ -195,6 +226,8 @@ function generateEntry(pluginDir, write) {
     console.error("src/ui-polish.css contains a literal </style>, which would break the injected fragment.");
     process.exit(1);
   }
+
+  validateCss(css, "src/ui-polish.css")
 
   const out = [
     "/**",

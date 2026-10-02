@@ -7,16 +7,16 @@
   },
   "short": "ui-polish",
   "description": {
-    "en": "A visual polish pack for the Komari web UI: ambient accent background, glass navbar, softer cards, tables and overlays, themed scrollbars and a single-accent loading spinner. Injects CSS only — no layout or behaviour changes.",
-    "zh-CN": "Komari 网页界面美化包：跟随主题色的氛围背景、毛玻璃导航栏、更柔和的卡片/表格/弹层、主题化滚动条，以及单一主题色的加载动画。只注入 CSS，不改动布局与行为。",
-    "zh-TW": "Komari 網頁介面美化包：跟隨主題色的氛圍背景、毛玻璃導覽列、更柔和的卡片/表格/彈層、主題化捲軸，以及單一主題色的載入動畫。只注入 CSS，不改動版面與行為。",
-    "ja": "Komari の Web UI 向けビジュアル調整パック。アクセントカラーに追従する背景のグラデーション、ガラス風ナビゲーションバー、やわらかいカード/テーブル/オーバーレイ、テーマ付きスクロールバー、単色のローディングスピナーを含みます。CSS の注入のみで、レイアウトや動作は変更しません。"
+    "en": "A visual polish pack for the Komari web UI. Drifting aurora backdrop or your own background image with dim / blur / grain, floating glass chrome, deeper cards, tables and overlays, themed scrollbars and a single-accent loading spinner. Injects CSS only — no layout or behaviour changes.",
+    "zh-CN": "Komari 网页界面美化包。可选用流动的氛围光晕，或换成你自己的背景图（支持调暗、模糊、颗粒），加上悬浮毛玻璃导航栏、更有层次的卡片/表格/弹层、主题化滚动条与单一主题色加载动画。只注入 CSS，不改动布局与行为。",
+    "zh-TW": "Komari 網頁介面美化包。可選用流動的氛圍光暈，或換成你自己的背景圖（支援調暗、模糊、顆粒），加上懸浮毛玻璃導覽列、更有層次的卡片/表格/彈層、主題化捲軸與單一主題色載入動畫。只注入 CSS，不改動版面與行為。",
+    "ja": "Komari の Web UI 向けビジュアル調整パック。流れるオーロラ背景または自分の背景画像（減光・ぼかし・粒子に対応）、浮遊するガラス調ナビゲーション、立体感のあるカード/テーブル、テーマ付きスクロールバー、単色ローディングを含みます。CSS の注入のみで、レイアウトや動作は変更しません。"
   },
   "author": {
     "en": "programming666",
     "zh-CN": "programming666"
   },
-  "version": "1.0.0",
+  "version": "1.1.0",
   "url": "https://github.com/programming666/komari-self",
   "icon": "icon.svg",
   "komari": ">=0.0.1",
@@ -51,9 +51,25 @@
           "ja": "角丸スタイル"
         },
         "help": {
-          "en": "soft: slightly rounder containers (default); stock: keep the theme's own radius scale, nothing exaggerated; round: visibly rounder cards. The theme's radius and scaling settings still apply.",
-          "zh-CN": "soft：容器略微更圆（默认）；stock：沿用主题自带的圆角尺度，不做放大；round：卡片明显更圆。主题自身的圆角与缩放设置仍然生效。",
-          "ja": "soft：やや丸め（既定）、stock：テーマ本来の角丸スケールをそのまま使用、round：はっきり丸め。テーマの角丸・拡大設定は引き続き有効です。"
+          "en": "soft: slightly rounder containers (default); stock: keep the theme's own radius scale; round: visibly rounder cards. The theme's radius and scaling settings still apply.",
+          "zh-CN": "soft：容器略微更圆（默认）；stock：沿用主题自带的圆角尺度；round：卡片明显更圆。主题自身的圆角与缩放设置仍然生效。",
+          "ja": "soft：やや丸め（既定）、stock：テーマ本来の角丸スケール、round：はっきり丸め。テーマの角丸・拡大設定は引き続き有効です。"
+        }
+      },
+      {
+        "key": "density",
+        "type": "select",
+        "options": "comfortable,compact",
+        "default": "comfortable",
+        "name": {
+          "en": "Density",
+          "zh-CN": "紧凑度",
+          "ja": "密度"
+        },
+        "help": {
+          "en": "comfortable: roomier cards and table rows (default); compact: tighter paddings and gaps, fits more nodes on one screen.",
+          "zh-CN": "comfortable：卡片与表格行更宽松（默认）；compact：内边距与间距更紧，一屏能放下更多节点。",
+          "ja": "comfortable：ゆったり（既定）、compact：余白を詰めて一画面に多く表示。"
         }
       },
       {
@@ -97,8 +113,199 @@
         },
         "help": {
           "en": "Node cards fade and rise in on load. Always disabled when the visitor's system asks for reduced motion.",
-          "zh-CN": "节点卡片加载时淡入上浮。访客系统开启“减少动态效果”时始终禁用。",
+          "zh-CN": "节点卡片加载时淡入上浮。访客系统开启「减少动态效果」时始终禁用。",
           "ja": "読み込み時にカードがフェードインします。OS の「視差効果を減らす」設定時は常に無効です。"
+        }
+      },
+      {
+        "type": "title",
+        "name": {
+          "en": "Background",
+          "zh-CN": "背景",
+          "ja": "背景"
+        }
+      },
+      {
+        "key": "ambient",
+        "type": "switch",
+        "default": true,
+        "name": {
+          "en": "Plugin background",
+          "zh-CN": "启用插件背景",
+          "ja": "プラグインの背景"
+        },
+        "help": {
+          "en": "Master switch for the backdrop layer. Turn it off to keep the theme's own flat background, whatever the mode below says.",
+          "zh-CN": "背景层的总开关。关掉即保留主题自带的纯色背景，下面的模式设置不再生效。",
+          "ja": "背景レイヤーの総合スイッチ。オフにするとテーマ本来の背景をそのまま使います。"
+        }
+      },
+      {
+        "key": "background",
+        "type": "select",
+        "options": "aurora,wash,image,solid,theme",
+        "default": "aurora",
+        "name": {
+          "en": "Background mode",
+          "zh-CN": "背景模式",
+          "ja": "背景モード"
+        },
+        "help": {
+          "en": "aurora: drifting accent clouds (default); wash: flat accent gradient; image: your own picture or gradient; solid: plain surface; theme: draw nothing and let the Komari theme's own background image show.",
+          "zh-CN": "aurora：流动的氛围光晕（默认）；wash：静态强调色渐变；image：你自己的图片或渐变；solid：纯色平面；theme：不绘制任何背景，交给主题自带的背景图。",
+          "ja": "aurora：流れる光（既定）、wash：静的なグラデーション、image：自分の画像、solid：単色、theme：テーマの背景画像をそのまま使用。"
+        }
+      },
+      {
+        "key": "backgroundImage",
+        "type": "string",
+        "default": "",
+        "name": {
+          "en": "Background image (light)",
+          "zh-CN": "背景图（亮色）",
+          "ja": "背景画像（ライト）"
+        },
+        "help": {
+          "en": "Used by the image mode. A plain URL or path, e.g. https://example.com/wall.jpg or /bg.jpg — or a data: URI. Pick a wide picture: it is scaled to cover the viewport.",
+          "zh-CN": "image 模式使用。填图片 URL 或路径即可，例如 https://example.com/wall.jpg、/bg.jpg，也支持 data: URI。建议用横向大图，会按「覆盖」缩放。",
+          "ja": "image モードで使用。URL かパス、または data: URI を指定します。横長の画像を推奨。"
+        }
+      },
+      {
+        "key": "backgroundImageDark",
+        "type": "string",
+        "default": "",
+        "name": {
+          "en": "Background image (dark)",
+          "zh-CN": "背景图（暗色）",
+          "ja": "背景画像（ダーク）"
+        },
+        "help": {
+          "en": "Optional, for dark mode. Leave empty to reuse the light image.",
+          "zh-CN": "可选，暗色模式专用。留空则沿用亮色那张。",
+          "ja": "任意。空欄ならライト用をそのまま使います。"
+        }
+      },
+      {
+        "key": "backgroundCss",
+        "type": "string",
+        "default": "",
+        "name": {
+          "en": "Background CSS (light, advanced)",
+          "zh-CN": "背景 CSS（亮色，高级）",
+          "ja": "背景 CSS（ライト・上級）"
+        },
+        "help": {
+          "en": "Optional escape hatch, takes precedence over the image above. Any CSS background value works, e.g. linear-gradient(120deg,#0f172a,#1e3a8a), radial-gradient(...), url(...), or several layers separated by commas.",
+          "zh-CN": "可选的进阶入口，优先级高于上面的图片。可填任意 CSS 背景值，例如 linear-gradient(120deg,#0f172a,#1e3a8a)、radial-gradient(...)、url(...)，也可以用逗号叠多层。",
+          "ja": "上級者向け。上の画像より優先されます。任意の CSS 背景値を指定できます。"
+        }
+      },
+      {
+        "key": "backgroundCssDark",
+        "type": "string",
+        "default": "",
+        "name": {
+          "en": "Background CSS (dark, advanced)",
+          "zh-CN": "背景 CSS（暗色，高级）",
+          "ja": "背景 CSS（ダーク・上級）"
+        },
+        "help": {
+          "en": "Same as above for dark mode. Leave empty to reuse the light value.",
+          "zh-CN": "同上，暗色模式专用。留空则沿用亮色的值。",
+          "ja": "ダークモード用。空欄ならライト用を使います。"
+        }
+      },
+      {
+        "key": "backgroundFit",
+        "type": "select",
+        "options": "cover,contain,repeat",
+        "default": "cover",
+        "name": {
+          "en": "Background fit",
+          "zh-CN": "背景铺排方式",
+          "ja": "背景の配置"
+        },
+        "help": {
+          "en": "cover: fill the viewport, cropping if needed (default); contain: show the whole image with a margin; repeat: tile it, for small seamless patterns.",
+          "zh-CN": "cover：铺满视口，必要时裁切（默认）；contain：完整显示图片，可能留边；repeat：平铺，适合小尺寸无缝图案。",
+          "ja": "cover：画面いっぱい（既定）、contain：全体を表示、repeat：タイル状に繰り返し。"
+        }
+      },
+      {
+        "key": "backgroundBlur",
+        "type": "number",
+        "default": 0,
+        "name": {
+          "en": "Background blur (px)",
+          "zh-CN": "背景模糊（px）",
+          "ja": "背景のぼかし（px）"
+        },
+        "help": {
+          "en": "0 to 60. Softens the artwork so foreground text stays easy to read; 0 to 12 is usually plenty.",
+          "zh-CN": "0–60。让背景柔化，前景文字更好读；一般 0–12 就够了。",
+          "ja": "0〜60。背景を柔らかくして文字を読みやすくします。0〜12 で十分です。"
+        }
+      },
+      {
+        "key": "backgroundDim",
+        "type": "number",
+        "default": 18,
+        "name": {
+          "en": "Background dim (%)",
+          "zh-CN": "背景调暗（%）",
+          "ja": "背景の減光（%）"
+        },
+        "help": {
+          "en": "0 to 85. Veils the artwork — white in light mode, black in dark mode — so text keeps its contrast over any picture. Raise it if a busy photo makes the page hard to read; lower it for more of the picture.",
+          "zh-CN": "0–85。给背景蒙一层纱（亮色为白、暗色为黑），使文字在任何图片上都有足够对比度。照片太花看不清时就调大，想看更多画面就调小。",
+          "ja": "0〜85。ライトでは白、ダークでは黒のベールを重ねて文字の可読性を保ちます。"
+        }
+      },
+      {
+        "key": "ambientIntensity",
+        "type": "select",
+        "options": "subtle,standard,strong",
+        "default": "standard",
+        "name": {
+          "en": "Accent strength",
+          "zh-CN": "氛围浓度",
+          "ja": "アクセントの強さ"
+        },
+        "help": {
+          "en": "How strong the accent colour is in the aurora and wash backgrounds.",
+          "zh-CN": "aurora / wash 背景里强调色的浓淡。",
+          "ja": "aurora / wash 背景におけるアクセントカラーの濃さ。"
+        }
+      },
+      {
+        "key": "auroraMotion",
+        "type": "switch",
+        "default": true,
+        "name": {
+          "en": "Aurora motion",
+          "zh-CN": "光晕流动",
+          "ja": "オーロラの動き"
+        },
+        "help": {
+          "en": "Let the aurora clouds drift slowly. Turn off for a static background, and keep in mind that visitors asking for reduced motion always get it static.",
+          "zh-CN": "让光晕缓慢流动。关掉即为静态背景。访客系统开启「减少动态效果」时，无论如何都是静态的。",
+          "ja": "オーロラをゆっくり動かします。オフにすると静止します。"
+        }
+      },
+      {
+        "key": "grain",
+        "type": "switch",
+        "default": true,
+        "name": {
+          "en": "Film grain",
+          "zh-CN": "颗粒质感",
+          "ja": "粒子感"
+        },
+        "help": {
+          "en": "A faint noise layer over the background, so large flat gradients stop looking like plastic.",
+          "zh-CN": "在背景上叠一层极淡的噪点，避免大面积渐变显得像塑料。",
+          "ja": "背景にごく淡いノイズを重ね、単調なグラデーションが安っぽく見えるのを防ぎます。"
         }
       },
       {
@@ -110,49 +317,49 @@
         }
       },
       {
-        "key": "ambient",
-        "type": "switch",
-        "default": true,
-        "name": {
-          "en": "Ambient background",
-          "zh-CN": "氛围背景",
-          "ja": "背景グラデーション"
-        },
-        "help": {
-          "en": "Soft accent-coloured wash behind every page, public and admin. A custom background image set in the theme settings still shows through.",
-          "zh-CN": "前台与后台统一叠加跟随主题色的柔和渐变。主题设置里自定义的背景图仍会正常显示。",
-          "ja": "公開ページと管理画面の両方に、アクセントカラーの淡いグラデーションを敷きます。テーマ設定の背景画像はそのまま表示されます。"
-        }
-      },
-      {
-        "key": "ambientIntensity",
-        "type": "select",
-        "options": "subtle,standard,strong",
-        "default": "standard",
-        "name": {
-          "en": "Ambient intensity",
-          "zh-CN": "氛围强度",
-          "ja": "グラデーションの強さ"
-        },
-        "help": {
-          "en": "How strong the accent wash is. Only used when the ambient background is enabled.",
-          "zh-CN": "渐变的浓淡。仅在开启氛围背景时生效。",
-          "ja": "グラデーションの濃さ。背景グラデーションが有効なときのみ反映されます。"
-        }
-      },
-      {
         "key": "glass",
         "type": "switch",
         "default": true,
         "name": {
-          "en": "Glass navbar and toolbars",
-          "zh-CN": "毛玻璃导航栏",
-          "ja": "ガラス風ナビゲーションバー"
+          "en": "Glass nav, toolbar and footer",
+          "zh-CN": "毛玻璃导航栏 / 工具条 / 页脚",
+          "ja": "ガラス調ナビ・ツールバー・フッター"
         },
         "help": {
-          "en": "Sticky translucent navbar, node-list toolbar and footer, plus the gradient wordmark.",
-          "zh-CN": "吸顶半透明导航栏、节点列表工具条与页脚，以及渐变站点标题。",
-          "ja": "半透明の固定ナビゲーションバー、ツールバー、フッターとグラデーションのロゴ。"
+          "en": "Translucent, blurred chrome with a top highlight, plus the gradient wordmark.",
+          "zh-CN": "半透明模糊的导航栏、节点列表工具条与页脚，以及渐变站点标题。",
+          "ja": "半透明でぼかしたナビ・ツールバー・フッターとグラデーションのロゴ。"
+        }
+      },
+      {
+        "key": "chrome",
+        "type": "select",
+        "options": "floating,attached",
+        "default": "floating",
+        "name": {
+          "en": "Chrome layout",
+          "zh-CN": "导航栏形态",
+          "ja": "ナビの配置"
+        },
+        "help": {
+          "en": "floating: the navbar detaches into a rounded glass island (default); attached: full-width bar flush with the top edge, like the stock UI.",
+          "zh-CN": "floating：导航栏脱离顶边，变成圆角玻璃岛（默认）；attached：与顶边贴合的整宽条，同原版。",
+          "ja": "floating：角丸のガラス島（既定）、attached：画面上端に密着した全幅バー。"
+        }
+      },
+      {
+        "key": "depth",
+        "type": "switch",
+        "default": true,
+        "name": {
+          "en": "Panel depth",
+          "zh-CN": "面板层次",
+          "ja": "パネルの立体感"
+        },
+        "help": {
+          "en": "An inner top highlight plus a gradient sheen, so cards read as lit from above instead of as flat rectangles.",
+          "zh-CN": "面板顶部内高光加轻微光泽，让卡片看起来是被上方光照亮，而不是一块平板。",
+          "ja": "上端のハイライトと光沢で、カードが平らに見えないようにします。"
         }
       },
       {
@@ -160,14 +367,14 @@
         "type": "switch",
         "default": true,
         "name": {
-          "en": "Cards and overlays",
-          "zh-CN": "卡片与弹层",
+          "en": "Cards, tiles and overlays",
+          "zh-CN": "卡片、节点卡与弹层",
           "ja": "カードとオーバーレイ"
         },
         "help": {
-          "en": "Layered shadows and rounded corners for cards, node tiles, usage bars, dialogs and popovers.",
-          "zh-CN": "为卡片、节点卡、用量条、对话框与浮层加上分层阴影和圆角。",
-          "ja": "カード、ノードタイル、使用率バー、ダイアログ、ポップオーバーに立体感を付けます。"
+          "en": "Layered shadows, rounded corners and hover lift for cards, node tiles, usage bars, dialogs and popovers.",
+          "zh-CN": "为卡片、节点卡、用量条、对话框与浮层加上分层阴影、圆角与悬停上浮。",
+          "ja": "カード、ノードタイル、使用率バー、ダイアログに影と角丸、ホバー時の浮き上がりを付けます。"
         }
       },
       {
@@ -180,9 +387,9 @@
           "ja": "テーブル"
         },
         "help": {
-          "en": "Card-like tables with an accent-tinted header and row hover feedback.",
-          "zh-CN": "表格卡片化：强调色表头与行悬停反馈。",
-          "ja": "カード風のテーブル。アクセントカラーのヘッダーと行ホバー。"
+          "en": "Card-like tables with a translucent sticky header and row hover feedback.",
+          "zh-CN": "表格卡片化：半透明吸顶表头与行悬停反馈。",
+          "ja": "カード風のテーブル。半透明の固定ヘッダーと行ホバー。"
         }
       },
       {
@@ -195,8 +402,8 @@
           "ja": "管理画面の透過"
         },
         "help": {
-          "en": "Let the ambient background show through the admin panel instead of its own flat fill, so both look the same.",
-          "zh-CN": "让后台内容区透出氛围背景，而不是它自带的纯色填充，使前后台观感一致。",
+          "en": "Let the background show through the admin panel instead of its own flat fill, so both look the same.",
+          "zh-CN": "让后台内容区透出背景，而不是它自带的纯色填充，使前后台观感一致。",
           "ja": "管理画面の単色背景を透過させ、公開ページと同じ背景を見せます。"
         }
       },

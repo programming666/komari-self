@@ -10,19 +10,19 @@
       },
       "short": "ui-polish",
       "description": {
-        "en": "A visual polish pack for the Komari web UI: ambient accent background, glass navbar, softer cards, tables and overlays, themed scrollbars and a single-accent loading spinner. Injects CSS only — no layout or behaviour changes.",
-        "zh-CN": "Komari 网页界面美化包：跟随主题色的氛围背景、毛玻璃导航栏、更柔和的卡片/表格/弹层、主题化滚动条，以及单一主题色的加载动画。只注入 CSS，不改动布局与行为。",
-        "zh-TW": "Komari 網頁介面美化包：跟隨主題色的氛圍背景、毛玻璃導覽列、更柔和的卡片/表格/彈層、主題化捲軸，以及單一主題色的載入動畫。只注入 CSS，不改動版面與行為。",
-        "ja": "Komari の Web UI 向けビジュアル調整パック。アクセントカラーに追従する背景のグラデーション、ガラス風ナビゲーションバー、やわらかいカード/テーブル/オーバーレイ、テーマ付きスクロールバー、単色のローディングスピナーを含みます。CSS の注入のみで、レイアウトや動作は変更しません。"
+        "en": "A visual polish pack for the Komari web UI. Drifting aurora backdrop or your own background image with dim / blur / grain, floating glass chrome, deeper cards, tables and overlays, themed scrollbars and a single-accent loading spinner. Injects CSS only — no layout or behaviour changes.",
+        "zh-CN": "Komari 网页界面美化包。可选用流动的氛围光晕，或换成你自己的背景图（支持调暗、模糊、颗粒），加上悬浮毛玻璃导航栏、更有层次的卡片/表格/弹层、主题化滚动条与单一主题色加载动画。只注入 CSS，不改动布局与行为。",
+        "zh-TW": "Komari 網頁介面美化包。可選用流動的氛圍光暈，或換成你自己的背景圖（支援調暗、模糊、顆粒），加上懸浮毛玻璃導覽列、更有層次的卡片/表格/彈層、主題化捲軸與單一主題色載入動畫。只注入 CSS，不改動版面與行為。",
+        "ja": "Komari の Web UI 向けビジュアル調整パック。流れるオーロラ背景または自分の背景画像（減光・ぼかし・粒子に対応）、浮遊するガラス調ナビゲーション、立体感のあるカード/テーブル、テーマ付きスクロールバー、単色ローディングを含みます。CSS の注入のみで、レイアウトや動作は変更しません。"
       },
-      "version": "1.0.0",
+      "version": "1.1.0",
       "author": {
         "en": "programming666",
         "zh-CN": "programming666"
       },
       "url": "https://github.com/programming666/komari-self",
-      "download": "https://github.com/programming666/komari-self/releases/download/ui-polish-v1.0.0/ui-polish-1.0.0.zip",
-      "sha256": "9d8039a4cd645ac1a29a3d400997ffd359548a60791316cef0c96bcabc1182c8",
+      "download": "https://github.com/programming666/komari-self/releases/download/ui-polish-v1.1.0/ui-polish-1.1.0.zip",
+      "sha256": "8ec0cd5276dda4de4ecf5073cd075c147da07726f1482b2e82435dba59418bf2",
       "komari": ">=0.0.1"
     }
   ]
