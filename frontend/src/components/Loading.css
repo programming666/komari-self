@@ -1,0 +1,92 @@
+/* Themed loading indicator.
+   Upstream shipped a four-colour (red/blue/green/yellow) brand spinner that
+   clashed with the accent colour; this is a single-accent arc on a faint
+   track, centred in the viewport. */
+
+:root {
+  --loading-width: 88px;
+}
+
+.km-loading {
+  min-height: 60vh;
+}
+
+.km-loading > p:first-of-type {
+  letter-spacing: -0.01em;
+  margin-bottom: 0.15rem;
+}
+
+.loader {
+  position: relative;
+  margin: 0 auto;
+  width: var(--loading-width);
+}
+
+.loader:before {
+  content: "";
+  display: block;
+  padding-top: 100%;
+}
+
+.showbox {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+/* Faint ring behind the moving arc. */
+.showbox::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  border: 3px solid color-mix(in oklab, var(--gray-12) 13%, transparent);
+}
+
+.circular {
+  animation: rotate 1.8s linear infinite;
+  height: 100%;
+  transform-origin: center center;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+.path {
+  stroke: var(--accent-9);
+  stroke-dasharray: 1, 200;
+  stroke-dashoffset: 0;
+  animation: dash 1.4s ease-in-out infinite;
+  stroke-linecap: round;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -35px;
+  }
+  100% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -124px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .circular {
+    animation-duration: 4s;
+  }
+}
