@@ -16,11 +16,30 @@ version    1.0.0
 来源        src/entry.js + src/ui-polish.css
 ```
 
+## 效果预览
+
+左侧为**未修改的上游前端**，右侧为同一实例装上本插件之后（同一批数据、同一时间）：
+
+| 原版 | 装上 UI Polish |
+| --- | --- |
+| ![原版首页](../../docs/screenshots/plugin-before-home.png) | ![美化后首页](../../docs/screenshots/plugin-after-home.png) |
+
+| 后台节点列表 | 后台节点列表（暗色） |
+| --- | --- |
+| ![后台列表](../../docs/screenshots/plugin-after-admin-servers.png) | ![后台列表暗色](../../docs/screenshots/plugin-after-admin-servers-dark.png) |
+
+| 插件已装并运行 | 插件配置页 | 首页（暗色） |
+| --- | --- | --- |
+| ![插件列表](../../docs/screenshots/plugin-installed.png) | ![插件配置](../../docs/screenshots/plugin-config-page.png) | ![暗色首页](../../docs/screenshots/plugin-after-home-dark.png) |
+
+> 截图取自一台**未修改的上游前端**实例，插件是从上面那份市场源安装的。
+
+
 ## 安装
 
 ### 方式一：后台上传（推荐）
 
-1. 本仓库 `dist/ui-polish-1.0.0.zip` 下载后，后台 → **插件** → 上传插件
+1. 从 [Releases](https://github.com/programming666/komari-self/releases/tag/ui-polish-v1.0.0) 下载 `ui-polish-1.0.0.zip`（或直接用仓库里的 `dist/ui-polish-1.0.0.zip`），后台 → **插件** → 上传插件
 2. 在插件列表里**批准权限并启用**（只请求 HTML 注入）
 3. 刷新页面即可看到效果
 
@@ -108,6 +127,38 @@ node scripts/build-plugin.mjs
 node scripts/build-plugin.mjs --market plugins/market/v1.json \
   --download https://github.com/<owner>/<repo>/releases/download/<tag>/ui-polish-1.0.0.zip
 ```
+
+## 验证情况
+
+在**未修改的上游前端**（`git stash` 掉所有美化改动后重新构建的 dist，编译出 `komari-stock.exe`）上实测，
+逐一对比关闭 / 开启插件时的 CSSOM 计算值：
+
+| 观察项 | 关闭插件 | 开启插件 |
+| --- | --- | --- |
+| 注入的 `<style>` | 无 | 18155 字节 / 86 条规则 |
+| `html` 背景 | `rgb(255, 255, 255)` | `rgb(252, 252, 252)` |
+| `.theme-root` 背景图 | `none` | `radial-gradient(1400px 720px at 6% -16%, …)` |
+| `.km-navbar` 定位 / 模糊 | `static` / `none` | `sticky` / `blur(18px) saturate(1.6)` |
+| 节点卡圆角 / 阴影 | `8.8px` / `none` | `19.8px` / 有 |
+| 用量条轨道 | 无内阴影 | `0 1px 2px inset` |
+| 数字字型 | `normal` | `tabular-nums` |
+| 站点标题 | 纯色 | `linear-gradient(100deg, …)` |
+| 副标题 | `rgb(230, 231, 255)`（几乎看不见的背景色阶） | `rgb(87, 83, 198)` |
+
+配置开关同样实测有效（保存后约 2 秒生效）：关掉氛围背景 + 毛玻璃导航栏 → 注入体积
+18155 → 14918 字节、规则 86 → 71 条、背景渐变消失、导航栏回到 `static`；把圆角切成 `round`
+→ 节点卡圆角 `19.8px → 26.4px`；恢复默认后各项与初始值完全一致。全过程浏览器控制台无报错。
+
+市场安装链路（本机无直连公网，走 socks5 代理）也已跑通：把本仓库的 `v1.json` 添加为市场来源后，
+目录里出现 `ui-polish 1.0.0`（`installable: true`），一键安装成功，后台插件日志：
+
+```
+[plugin] loaded ui-polish
+[ui-polish] injected 18 KiB of CSS; sections: numerals, ambient, glass, elevation, tables, adminShell, scrollbar, motion, loader
+```
+
+安装后的 4 个文件与发行包内的条目**逐字节一致**；发行包哈希 `e77cacc6…` 与市场清单里的 `sha256`、
+以及本地重新构建的结果三者相同（打包已固定时间戳，可复现；市场安装时服务端也会校验该哈希）。
 
 ## 已知边界
 
