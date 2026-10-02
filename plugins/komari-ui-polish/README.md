@@ -132,6 +132,21 @@ node scripts/build-plugin.mjs --market plugins/market/v1.json \
   --download https://github.com/<owner>/<repo>/releases/download/<tag>/ui-polish-1.0.0.zip
 ```
 
+## 发布新版本
+
+1. 改 `src/` 里的样式或逻辑，并把 `komari-plugin.json` 的 `version` 加一（例如 `1.1.0`）；
+2. `node scripts/build-plugin.mjs` 生成新的 `dist/ui-polish-1.1.0.zip`，记下它打印的 sha256；
+3. 在 GitHub 上打一个 Release（tag 形如 `ui-polish-v1.1.0`），把该 zip 作为附件上传；
+4. 生成并提交更新后的市场源文件：
+
+   ```bash
+   node scripts/build-plugin.mjs --market plugins/market/v1.json \
+     --download https://github.com/programming666/komari-self/releases/download/ui-polish-v1.1.0/ui-polish-1.1.0.zip
+   ```
+
+   后台已添加该市场源的实例随即能看到新版本。`sha256` 必须与实际发行的 zip 一致 —— 安装时
+   服务端会校验它，而打包已固定时间戳，所以同一份源码永远得到同一个 zip 与同一个哈希。
+
 ## 验证情况
 
 在**未修改的上游前端**（`git stash` 掉所有美化改动后重新构建的 dist，编译出 `komari-stock.exe`）上实测，
