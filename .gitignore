@@ -39,3 +39,9 @@ komari
 .codex
 
 /web/filemanager/data
+
+# local test instance logs
+run-stdout.log
+run-stderr.log
+komari-dev.exe
+komari-stock.exe

@@ -1,19 +1,39 @@
-/* ==========================================================================
-   Komari Self — UI polish layer
-   --------------------------------------------------------------------------
-   A single additive design layer, loaded after @radix-ui/themes/styles.css.
-   It only refines appearance — colour, elevation, radius, motion, scrollbars.
-   No layout logic, behaviour or API surface is touched.
+/* GENERATED — do not edit here.
+   Canonical copy: plugins/komari-ui-polish/src/ui-polish.css
+   Regenerate with: node scripts/sync-theme-css.mjs
+   The plugin's @section markers are inert comments once bundled. */
 
-   Radix paints a Card's background and its 1px ring with ::before / ::after,
-   so corner radii and tints are applied through the card's own custom
-   properties (--base-card-border-radius, --card-background-color) instead of
-   the element's border-radius / background — otherwise the inner layers keep
-   the old geometry and the corners break.
+/* ==========================================================================
+   Komari UI Polish — injected style layer  (v1.1 — "aurora")
+   --------------------------------------------------------------------------
+   Loaded by the ui-polish plugin through server.injectHTML(), so it lands at the
+   end of <head> and therefore wins over the bundle stylesheet at equal
+   specificity. It touches appearance only: colour, elevation, radius, motion,
+   scrollbars, and one backdrop. No layout logic, behaviour or API surface is
+   changed.
+
+   The file is split into named sections marked with
+       /* @section:name *\/
+   script.js concatenates only the enabled ones (see the plugin's config page).
+   The text before the first marker is "core", which is always included.
+
+   Two Radix details shape the rules below:
+     * a Card paints its background and its 1px ring with ::before / ::after, so
+       corner radii and tints go through the card's own custom properties
+       (--base-card-border-radius, --base-card-surface-box-shadow) instead of the
+       element's border-radius / background — otherwise the inner layers keep the
+       old geometry and the corners break.
+     * the theme's colour variables (--accent-9, --gray-1, …) are defined *on*
+       .theme-root, so anything that paints accent colour has to live inside it.
+       That is why the backdrop is drawn on .theme-root::before / ::after and
+       .km-layout::before / ::after — pseudo-elements inherit those variables —
+       rather than on a layer appended to <body>, which would inherit nothing.
    ========================================================================== */
 
+/* @section:core */
+
 /* --------------------------------------------------------------------------
-   1. Design tokens
+   Design tokens
    -------------------------------------------------------------------------- */
 :root {
   /* Elevation: cool slate in light mode, pure black in dark mode. */
@@ -28,32 +48,54 @@
     0 22px 48px -20px rgb(var(--km-shadow-rgb) / 0.34),
     0 8px 20px -10px rgb(var(--km-shadow-rgb) / 0.18);
 
-  /* Hairlines and translucent surfaces derived from the active accent scale. */
+  /* Hairlines, translucent surfaces, and the inner top highlight that gives flat
+     panels a little depth. */
   --km-hairline: color-mix(in oklab, var(--gray-12) 8%, transparent);
   --km-hairline-strong: color-mix(in oklab, var(--gray-12) 15%, transparent);
-  --km-surface: var(--color-panel-solid, var(--gray-1));
-  --km-glass: color-mix(in oklab, var(--km-surface) 76%, transparent);
+  --km-highlight: rgb(255 255 255 / 0.55);
+  --km-glass: color-mix(in oklab, var(--color-panel-solid, var(--gray-1)) 74%, transparent);
 
   --km-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --km-dur: 220ms;
+
+  /* Geometry, filled in from the plugin configuration. */
+  --km-radius-tile: 14px;
+  --km-radius-card: 16px;
+  --km-radius-chrome: 16px;
+  --km-pad: 0.9rem;
+  --km-gap: 1rem;
 }
 
 .dark {
   --km-shadow-rgb: 0 0 0;
-  --km-hairline: color-mix(in oklab, var(--gray-12) 12%, transparent);
-  --km-hairline-strong: color-mix(in oklab, var(--gray-12) 20%, transparent);
-  --km-glass: color-mix(in oklab, var(--km-surface) 70%, transparent);
+  --km-hairline: color-mix(in oklab, var(--gray-12) 14%, transparent);
+  --km-hairline-strong: color-mix(in oklab, var(--gray-12) 22%, transparent);
+  --km-highlight: rgb(255 255 255 / 0.07);
+  --km-glass: color-mix(in oklab, var(--color-panel-solid, var(--gray-2)) 68%, transparent);
 }
 
-/* Softer, more generous container corners (controls keep their own scale). */
+/* Softer container corners. --radius-factor is kept so the theme's own radius
+   setting (none / small / medium / large / full) still applies. */
 .theme-root {
-  --radius-4: calc(9px * var(--scaling) * var(--radius-factor, 1));
-  --radius-5: calc(13px * var(--scaling) * var(--radius-factor, 1));
-  --radius-6: calc(18px * var(--scaling) * var(--radius-factor, 1));
+  --radius-4: var(--km-radius-4, calc(8px * var(--scaling) * var(--radius-factor, 1)));
+  --radius-5: var(--km-radius-5, calc(12px * var(--scaling) * var(--radius-factor, 1)));
+  --radius-6: calc(16px * var(--scaling) * var(--radius-factor, 1));
+}
+
+/* The canvas the backdrop is painted on, plus the colour-scheme hint browsers
+   use for form controls and native scrollbars. */
+html {
+  background: #fcfcfc;
+  color-scheme: light;
+}
+
+html.dark {
+  background: #111111;
+  color-scheme: dark;
 }
 
 /* --------------------------------------------------------------------------
-   2. Foundations — typography, selection, focus, motion
+   Foundations
    -------------------------------------------------------------------------- */
 .theme-root {
   font-family:
@@ -64,20 +106,23 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Live metrics read far better with fixed-width digits. */
-.km-summary-card,
-.km-node-card,
-.km-usage-bar,
-.km-top-card,
-.km-details-item,
-.km-node-detail-row,
-.rt-TableRoot {
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum" 1, "cv01" 1;
+/* Tighter headings are the single biggest lever on how modern a dense dashboard
+   reads. */
+.theme-root :is(h1, h2, h3) {
+  letter-spacing: -0.021em;
+}
+
+.km-top-card > * > label:first-child {
+  letter-spacing: 0.02em;
 }
 
 ::selection {
   background: color-mix(in oklab, var(--accent-9) 30%, transparent);
+}
+
+:focus-visible {
+  outline-color: color-mix(in oklab, var(--accent-9) 70%, transparent);
+  outline-offset: 1px;
 }
 
 .rt-BaseButton,
@@ -92,66 +137,281 @@
     transform var(--km-dur) var(--km-ease);
 }
 
-:focus-visible {
-  outline-color: color-mix(in oklab, var(--accent-9) 70%, transparent);
+/* A hairline of light on the top edge and a soft press, so buttons read as
+   physical controls without changing any of their colours. */
+.rt-BaseButton:is(.rt-variant-solid),
+.rt-BaseButton:is(.rt-variant-classic) {
+  background-image: linear-gradient(180deg, rgb(255 255 255 / 0.14), rgb(255 255 255 / 0) 55%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.12);
 }
 
+.rt-BaseButton:is(.rt-variant-solid):active,
+.rt-BaseButton:is(.rt-variant-classic):active {
+  transform: translateY(1px);
+}
+
+.km-main {
+  padding-bottom: 1.5rem;
+}
+
+/* @section:numerals */
+/* Live metrics read far better with fixed-width digits. */
+.km-summary-card,
+.km-node-card,
+.km-usage-bar,
+.km-top-card,
+.km-details-item,
+.km-node-detail-row,
+.rt-TableRoot,
+[data-slot="table-container"] {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "cv01" 1;
+}
+
+/* @section:backdrop */
 /* --------------------------------------------------------------------------
-   3. Ambient page background
-   --------------------------------------------------------------------------
-/* The wash lives on the theme root so every layout — public and admin — gets
-   it, and it is viewport-anchored so short pages still read the same. Accent
-   aware: it follows whatever accent colour the user picked. */
+   Backdrop
+   -------------------------------------------------------------------------- */
+/* The app paints its own opaque canvas; while the plugin owns the background,
+   those fills step aside so the layer below shows through. Mode "theme" omits
+   this section and leaves the stock painting (including the theme's own
+   background image) untouched. */
+html,
+body,
+#root,
 .theme-root {
-  min-height: 100vh;
-  background-color: var(--gray-1);
-  background-image:
-    radial-gradient(
-      1400px 720px at 6% -16%,
-      color-mix(in oklab, var(--accent-9) 9%, transparent),
-      transparent 70%
-    ),
-    radial-gradient(
-      1100px 620px at 98% -8%,
-      color-mix(in oklab, var(--accent-9) 6%, transparent),
-      transparent 66%
-    );
-  background-attachment: fixed;
-  background-repeat: no-repeat;
+  background-color: transparent;
 }
 
-.km-layout {
-  position: relative;
-}
-
-/* The wash is already painted by the theme root; staying transparent keeps a
-   user supplied background image on this element fully visible. */
+.km-layout,
 .km-layout.bg-accent-1 {
   background-color: transparent;
 }
 
-.km-main {
-  padding-bottom: 1.5rem;
+/* A background image configured in the Komari theme settings paints as an inline
+   style on .km-layout, which would cover the backdrop. The plugin's own
+   background takes precedence instead, so dim, blur, grain and the light/dark
+   split all apply to it; mode "theme" is how you defer to the theme's image. */
+.km-layout[style*="background-image"] {
+  background-image: none !important;
 }
 
-.km-main {
-  padding-bottom: 1.5rem;
+/* The artwork itself: a fixed, blurred layer sandwiched between the theme root's
+   background and its content. Grabbing z-index -1 puts it behind the cards while
+   staying above the root's own background, and inheriting the theme's accent and
+   gray variables is what makes it follow the chosen palette. */
+.theme-root::before {
+  content: "";
+  position: fixed;
+  inset: -6%;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    var(--km-grain-layer, none),
+    linear-gradient(var(--km-scrim-color), var(--km-scrim-color)),
+    var(--km-artwork, none);
+  background-attachment: fixed, fixed, fixed;
+  background-position: center, center, center;
+  background-repeat: repeat, no-repeat, var(--km-bg-repeat, no-repeat);
+  background-size: 160px 160px, auto, var(--km-bg-size, cover);
+  filter: blur(var(--km-bg-blur, 0px));
+  transform: scale(1.03);
 }
 
+/* Readability scrim: light mode veils with white, dark mode with black, so text
+   keeps its contrast over any artwork. */
+.theme-root {
+  --km-scrim-color: rgb(var(--km-scrim-rgb, 255 255 255) / var(--km-bg-dim, 18%));
+}
+
+.dark {
+  --km-scrim-rgb: 0 0 0;
+}
+
+/* Base geometry for the drifting clouds (aurora mode). They are decorative only,
+   so they must never swallow clicks. */
+.theme-root::after,
+.km-layout::before,
+.km-layout::after {
+  content: "";
+  position: fixed;
+  inline-size: 68vmax;
+  block-size: 68vmax;
+  border-radius: 50%;
+  filter: blur(64px);
+  z-index: -1;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* @section:bgWash */
+/* Flat accent wash. */
+.theme-root {
+  --km-artwork:
+    radial-gradient(
+      1400px 720px at 6% -16%,
+      color-mix(in oklab, var(--accent-9) var(--km-ambient-a1, 9%), transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      1100px 620px at 98% -8%,
+      color-mix(in oklab, var(--accent-9) var(--km-ambient-a2, 6%), transparent),
+      transparent 66%
+    );
+}
+
+/* @section:bgAurora */
+/* Drifting accent clouds: a tinted base, plus three oversized blurred blobs that
+   animate transform only (see the auroraMotion section), so the artwork stays on
+   the compositor. */
+/* Light mode leans on the deeper accent steps: the mid-tone that reads well on a
+   dark canvas turns into a barely visible pastel over a near-white one. */
+.theme-root {
+  --km-aura-c1: var(--accent-9);
+  --km-aura-c2: var(--accent-10);
+  --km-aura-use1: var(--km-aura-a1, 24%);
+  --km-aura-use2: var(--km-aura-a2, 16%);
+}
+
+.dark .theme-root {
+  --km-aura-c1: var(--accent-9);
+  --km-aura-c2: var(--accent-11);
+  --km-aura-use1: var(--km-aura-a1d, 16%);
+  --km-aura-use2: var(--km-aura-a2d, 10%);
+}
+
+.theme-root {
+  --km-artwork: linear-gradient(
+    160deg,
+    color-mix(in oklab, var(--km-aura-c1, var(--accent-9)) var(--km-aura-use1, 24%), transparent),
+    transparent 62%
+  );
+}
+
+.theme-root::after {
+  top: -22vmax;
+  left: -14vmax;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in oklab, var(--km-aura-c1, var(--accent-9)) var(--km-aura-use1, 24%), transparent),
+    transparent 72%
+  );
+}
+
+.km-layout::before {
+  top: -16vmax;
+  right: -20vmax;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in oklab, var(--km-aura-c2, var(--accent-11)) var(--km-aura-use2, 16%), transparent),
+    transparent 72%
+  );
+  filter: blur(70px) hue-rotate(38deg);
+}
+
+.km-layout::after {
+  bottom: -26vmax;
+  left: 16vw;
+  top: auto;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in oklab, var(--km-aura-c1, var(--accent-9)) var(--km-aura-use1, 24%), transparent),
+    transparent 70%
+  );
+  filter: blur(80px) hue-rotate(-46deg);
+}
+
+/* @section:bgSolid */
+/* Plain surface: a flat step of the theme's own grey scale. */
+.theme-root {
+  --km-artwork: linear-gradient(var(--gray-2), var(--gray-2));
+}
+
+/* @section:bgImage */
+/* Personal backdrop. --km-bg-image / --km-bg-image-dark are filled from the
+   plugin configuration and may hold any CSS background value, so a gradient, a
+   data: URI or an image-set() works as well as a photo URL. */
+.theme-root {
+  --km-artwork: var(--km-bg-image, none);
+}
+
+.dark .theme-root {
+  --km-artwork: var(--km-bg-image-dark, var(--km-bg-image, none));
+}
+
+/* @section:grain */
+/* Film grain: tiled fractal noise at a low alpha, so large flat gradients stop
+   looking like plastic. */
+:root {
+  --km-grain-layer: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
+}
+
+/* @section:auroraMotion */
+/* The clouds drift slowly and only ever animate transform, so the browser keeps
+   the work on the compositor instead of repainting the artwork every frame. */
+.theme-root::after,
+.km-layout::before,
+.km-layout::after {
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+.theme-root::after {
+  animation-name: km-drift-1;
+  animation-duration: 46s;
+}
+
+.km-layout::before {
+  animation-name: km-drift-2;
+  animation-duration: 62s;
+}
+
+.km-layout::after {
+  animation-name: km-drift-3;
+  animation-duration: 37s;
+}
+
+@keyframes km-drift-1 {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(9vmax, 7vmax, 0) scale(1.14);
+  }
+}
+
+@keyframes km-drift-2 {
+  from {
+    transform: translate3d(0, 0, 0) scale(1.08);
+  }
+  to {
+    transform: translate3d(-11vmax, 9vmax, 0) scale(0.94);
+  }
+}
+
+@keyframes km-drift-3 {
+  from {
+    transform: translate3d(0, 0, 0) scale(0.96);
+  }
+  to {
+    transform: translate3d(7vmax, -8vmax, 0) scale(1.12);
+  }
+}
+
+/* @section:glass */
 /* --------------------------------------------------------------------------
-   4. Navbar — sticky glass bar
+   Navbar, toolbars, footer
    -------------------------------------------------------------------------- */
 .km-navbar {
-  position: sticky;
-  top: 0;
   z-index: 60;
-  border-radius: 0 0 18px 18px;
   border: 1px solid var(--km-hairline);
-  border-top: 0;
   background: var(--km-glass);
-  backdrop-filter: blur(18px) saturate(1.6);
-  -webkit-backdrop-filter: blur(18px) saturate(1.6);
-  box-shadow: var(--km-elevate-1);
+  backdrop-filter: blur(20px) saturate(1.75);
+  -webkit-backdrop-filter: blur(20px) saturate(1.75);
+  box-shadow:
+    var(--km-elevate-1),
+    inset 0 1px 0 var(--km-highlight);
 }
 
 .km-navbar-brand > a > span {
@@ -167,11 +427,11 @@
   letter-spacing: -0.02em;
 }
 
-/* Upstream paints this subtitle with accent-4, which is a *background* step
-   and therefore nearly invisible. Use the readable text step instead. */
+/* The stock navbar paints its subtitle with accent-4, a *background* step that is
+   nearly invisible on the panel. Use the readable text step instead. */
 .km-navbar-brand > div > span {
   color: var(--accent-11) !important;
-  opacity: 0.9;
+  opacity: 0.92;
   letter-spacing: 0.01em;
 }
 
@@ -183,30 +443,76 @@
   transform: translateY(-1px);
 }
 
-/* --------------------------------------------------------------------------
-   5. Surfaces — cards, callouts, panels
-   -------------------------------------------------------------------------- */
-.rt-BaseCard {
-  --base-card-border-radius: max(var(--card-border-radius, 8px), 12px);
+.km-node-display .control-bar {
+  border: 1px solid var(--km-hairline);
+  background: var(--km-glass);
+  backdrop-filter: blur(16px) saturate(1.5);
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
+  box-shadow:
+    var(--km-elevate-1),
+    inset 0 1px 0 var(--km-highlight);
 }
 
-.rt-BaseCard:where(.rt-variant-surface) {
+.km-footer {
+  border-top: 1px solid var(--km-hairline) !important;
+  background: color-mix(in oklab, var(--gray-1) 55%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  opacity: 0.94;
+}
+
+.km-footer a {
+  color: var(--accent-11);
+  text-decoration: none;
+}
+
+.km-footer a:hover {
+  text-decoration: underline;
+}
+
+/* @section:chrome */
+/* --------------------------------------------------------------------------
+   Floating chrome
+   -------------------------------------------------------------------------- */
+/* The navbar detaches from the viewport edge and becomes a glass island — the
+   single change that most defines the new feel. */
+.km-navbar {
+  position: sticky;
+  top: 10px;
+  margin: 8px 0 16px;
+  border-radius: var(--km-radius-chrome, 16px);
+  border-top-width: 1px;
+}
+
+.km-node-display .control-bar {
+  border-radius: var(--km-radius-chrome, 16px) !important;
+  margin-bottom: calc(var(--km-gap) * 0.6);
+}
+
+/* @section:elevation */
+/* --------------------------------------------------------------------------
+   Cards, callouts, overlays
+   -------------------------------------------------------------------------- */
+.rt-BaseCard {
+  --base-card-border-radius: var(--km-radius-tile, 12px);
+}
+
+.rt-BaseCard:is(.rt-variant-surface) {
   box-shadow: var(--km-elevate-1);
 }
 
-.rt-BaseCard:where(.rt-variant-classic) {
+.rt-BaseCard:is(.rt-variant-classic) {
   box-shadow:
     0 0 0 1px var(--km-hairline),
     var(--km-elevate-2);
 }
 
-/* Summary strip on the dashboard */
 .km-summary-card {
-  --base-card-border-radius: 18px;
-  padding: 0.9rem !important;
+  --base-card-border-radius: var(--km-radius-card, 18px);
+  padding: var(--km-pad) !important;
 }
 
-.km-summary-card:where(.rt-variant-surface)::before {
+.km-summary-card:is(.rt-variant-surface)::before {
   background-image: linear-gradient(
     140deg,
     color-mix(in oklab, var(--accent-9) 9%, transparent),
@@ -216,8 +522,8 @@
 
 .km-top-card {
   position: relative;
-  border-radius: 14px;
-  padding: 0.7rem 0.9rem 0.6rem 1.05rem;
+  border-radius: var(--km-radius-tile, 14px);
+  padding: 0.65rem 0.9rem 0.6rem 1.05rem;
   background: color-mix(in oklab, var(--gray-a3) 55%, transparent);
   border: 1px solid var(--km-hairline);
   overflow: hidden;
@@ -249,8 +555,7 @@
 }
 
 .km-top-card > * > label:first-child {
-  font-size: 0.78rem;
-  letter-spacing: 0.02em;
+  font-size: 0.76rem;
   text-transform: uppercase;
   opacity: 0.75;
 }
@@ -261,42 +566,13 @@
   line-height: 1.5;
 }
 
-/* Toolbar above the node grid */
-.km-node-display .control-bar {
-  border-radius: 16px !important;
-  border: 1px solid var(--km-hairline);
-  background: var(--km-glass);
-  backdrop-filter: blur(14px) saturate(1.4);
-  -webkit-backdrop-filter: blur(14px) saturate(1.4);
-  box-shadow: var(--km-elevate-1);
-}
-
-.km-callout {
-  border-radius: 12px;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-.km-setting-card {
-  border-radius: 14px;
-}
-
-.km-details-section,
-.details-section {
-  border-radius: 12px;
-  border: 1px solid var(--km-hairline);
-}
-
-/* --------------------------------------------------------------------------
-   6. Node cards
-   -------------------------------------------------------------------------- */
 .km-node-card {
-  --base-card-border-radius: 16px;
+  --base-card-border-radius: var(--km-radius-card, 16px);
   --base-card-surface-box-shadow: 0 0 0 1px var(--km-hairline);
   box-shadow: var(--km-elevate-1);
 }
 
-.km-node-card:where(.rt-variant-surface)::before {
+.km-node-card:is(.rt-variant-surface)::before {
   background-image: linear-gradient(
     165deg,
     color-mix(in oklab, var(--accent-9) 7%, transparent),
@@ -331,16 +607,62 @@
   background: var(--accent-contrast);
 }
 
-/* --------------------------------------------------------------------------
-   7. Usage bars
-   -------------------------------------------------------------------------- */
+.km-callout {
+  border-radius: var(--km-radius-tile, 12px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.km-setting-card {
+  border-radius: var(--km-radius-tile, 14px);
+}
+
+.km-details-section,
+.details-section {
+  border-radius: var(--km-radius-tile, 12px);
+  border: 1px solid var(--km-hairline);
+}
+
+.km-login-card {
+  --base-card-border-radius: var(--km-radius-card, 18px);
+  box-shadow: var(--km-elevate-3);
+}
+
+.km-login-page {
+  background-image:
+    radial-gradient(
+      900px 480px at 15% -10%,
+      color-mix(in oklab, var(--accent-9) 16%, transparent),
+      transparent 68%
+    ),
+    radial-gradient(
+      780px 440px at 92% 4%,
+      color-mix(in oklab, var(--accent-9) 10%, transparent),
+      transparent 66%
+    );
+}
+
+.rt-PopoverContent,
+.rt-SelectContent,
+.rt-DropdownMenuContent,
+.rt-HoverCardContent {
+  border-radius: var(--km-radius-tile, 14px);
+  border: 1px solid var(--km-hairline);
+  box-shadow: var(--km-elevate-3);
+}
+
+.rt-BaseDialogOverlay {
+  backdrop-filter: blur(6px) saturate(1.2);
+  -webkit-backdrop-filter: blur(6px) saturate(1.2);
+}
+
+/* Usage bars: the track is plain, the fill is a div carrying an inline
+   background-color and scaleX, so the gloss is layered over it. */
 .km-usage-bar-track {
   background: color-mix(in oklab, var(--gray-12) 11%, transparent) !important;
   box-shadow: inset 0 1px 2px rgb(var(--km-shadow-rgb) / 0.18);
 }
 
-/* The fill is a plain div carrying an inline background-color + scaleX.
-   Layer a gloss on top of it without touching the component. */
 .km-usage-bar-track > div {
   position: relative;
 }
@@ -358,14 +680,36 @@
   );
 }
 
+/* @section:depth */
 /* --------------------------------------------------------------------------
-   8. Tables
+   Depth
    -------------------------------------------------------------------------- */
-/* Radix Table (used sparingly) */
+/* An inner top highlight on every panel, so cards read as lit from above rather
+   than as flat rectangles. */
+.rt-BaseCard:is(.rt-variant-surface) {
+  box-shadow:
+    var(--km-elevate-1),
+    inset 0 1px 0 var(--km-highlight);
+}
+
+.km-top-card,
+.km-setting-card,
+.km-callout {
+  box-shadow: inset 0 1px 0 var(--km-highlight);
+}
+
+.km-node-list {
+  gap: var(--km-gap);
+}
+
+/* @section:tables */
+/* --------------------------------------------------------------------------
+   Tables
+   -------------------------------------------------------------------------- */
 .rt-TableRoot {
   border: 1px solid var(--km-hairline);
-  border-radius: 14px;
-  background: var(--km-surface);
+  border-radius: var(--km-radius-tile, 14px);
+  background: var(--color-panel-solid, var(--gray-1));
   box-shadow: var(--km-elevate-1);
 }
 
@@ -380,12 +724,15 @@
 }
 
 /* The app's own table kit (components/ui/table.tsx). The table element and its
-   head carry inline accent colours, hence the !important overrides. */
+   head carry inline colours, hence the !important overrides. */
 [data-slot="table-container"] {
   border: 1px solid var(--km-hairline);
-  border-radius: 14px;
-  background: var(--km-surface);
+  border-radius: var(--km-radius-tile, 14px);
+  background: color-mix(in oklab, var(--color-panel-solid, var(--gray-1)) 88%, transparent);
   box-shadow: var(--km-elevate-1);
+  scrollbar-color: var(--accent-7) transparent;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .km-ui-table {
@@ -393,8 +740,13 @@
 }
 
 .km-ui-table [data-slot="table-head"] {
-  background-color: color-mix(in oklab, var(--accent-9) 7%, transparent) !important;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: color-mix(in oklab, var(--accent-9) 8%, var(--color-panel-solid, var(--gray-1))) !important;
   border-bottom: 1px solid var(--km-hairline);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .km-ui-table-header th {
@@ -415,72 +767,37 @@
 
 .km-ui-table [data-slot="table-cell"],
 .km-ui-table [data-slot="table-head"] {
-  padding-top: 0.7rem;
-  padding-bottom: 0.7rem;
+  padding-top: calc(var(--km-pad) * 0.8);
+  padding-bottom: calc(var(--km-pad) * 0.8);
 }
 
 .expanded-row {
   background-color: color-mix(in oklab, var(--accent-9) 7%, transparent) !important;
 }
 
+/* @section:adminShell */
 /* --------------------------------------------------------------------------
-   9. Overlays — popovers, menus, dialogs
+   Admin shell
    -------------------------------------------------------------------------- */
-.rt-PopoverContent,
-.rt-SelectContent,
-.rt-DropdownMenuContent,
-.rt-HoverCardContent {
-  border-radius: 14px;
-  border: 1px solid var(--km-hairline);
-  box-shadow: var(--km-elevate-3);
+/* AdminPanelBar paints opaque accent-1 / accent-3 fills on the shell and on its
+   single content child, both as inline styles — hence !important. Keeping them
+   transparent lets the shared backdrop show through, so the admin pages read like
+   the public ones. */
+.km-admin-layout.km-admin-panel-bar {
+  background-color: transparent !important;
 }
 
-.rt-BaseDialogOverlay {
-  backdrop-filter: blur(6px) saturate(1.2);
-  -webkit-backdrop-filter: blur(6px) saturate(1.2);
+.km-admin-panel-content {
+  background-color: transparent !important;
 }
 
-.km-login-card {
-  --base-card-border-radius: 18px;
-  box-shadow: var(--km-elevate-3);
+.km-admin-panel-content > div {
+  background-color: transparent !important;
 }
 
-.km-login-page {
-  background-image:
-    radial-gradient(
-      900px 480px at 15% -10%,
-      color-mix(in oklab, var(--accent-9) 16%, transparent),
-      transparent 68%
-    ),
-    radial-gradient(
-      780px 440px at 92% 4%,
-      color-mix(in oklab, var(--accent-9) 10%, transparent),
-      transparent 66%
-    );
-}
-
+/* @section:scrollbar */
 /* --------------------------------------------------------------------------
-   10. Footer
-   -------------------------------------------------------------------------- */
-.km-footer {
-  border-top: 1px solid var(--km-hairline) !important;
-  background: color-mix(in oklab, var(--km-surface) 60%, transparent);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  opacity: 0.92;
-}
-
-.km-footer a {
-  color: var(--accent-11);
-  text-decoration: none;
-}
-
-.km-footer a:hover {
-  text-decoration: underline;
-}
-
-/* --------------------------------------------------------------------------
-   11. Scrollbars
+   Scrollbars
    -------------------------------------------------------------------------- */
 ::-webkit-scrollbar {
   width: 10px;
@@ -506,31 +823,9 @@ body,
   scrollbar-color: color-mix(in oklab, var(--gray-12) 22%, transparent) transparent;
 }
 
-[data-slot="table-container"] {
-  scrollbar-color: var(--accent-7) transparent;
-}
-
+/* @section:motion */
 /* --------------------------------------------------------------------------
-   12. Admin shell
-   -------------------------------------------------------------------------- */
-/* AdminPanelBar paints opaque accent-1 / accent-3 fills on the shell and on its
-   single content child, both as inline styles — hence !important. Keeping them
-   transparent lets the shared ambient wash show through, so admin pages read
-   like the public ones. */
-.km-admin-layout.km-admin-panel-bar {
-  background-color: transparent !important;
-}
-
-.km-admin-panel-content {
-  background-color: transparent !important;
-}
-
-.km-admin-panel-content > div {
-  background-color: transparent !important;
-}
-
-/* --------------------------------------------------------------------------
-   13. Motion
+   Motion
    -------------------------------------------------------------------------- */
 @keyframes km-rise {
   from {
@@ -543,27 +838,128 @@ body,
   }
 }
 
+/* No fill mode on purpose: the dashboard re-renders on every metrics push, and
+   `both` would hold a freshly mounted card at the 0-opacity keyframe — the grid
+   visibly blinks out on updates. Without it a card animates in but is never stuck
+   invisible. */
 .km-node-list > *,
 .km-top-card {
-  animation: km-rise 320ms var(--km-ease) both;
+  animation: km-rise 320ms var(--km-ease);
 }
 
 .km-node-list > *:nth-child(2) {
   animation-delay: 30ms;
 }
+
 .km-node-list > *:nth-child(3) {
   animation-delay: 60ms;
 }
+
 .km-node-list > *:nth-child(4) {
   animation-delay: 90ms;
 }
+
 .km-node-list > *:nth-child(5) {
   animation-delay: 120ms;
 }
+
 .km-node-list > *:nth-child(6) {
   animation-delay: 150ms;
 }
 
+/* @section:loader */
+/* --------------------------------------------------------------------------
+   Loading indicator
+   -------------------------------------------------------------------------- */
+/* The stock loader is a four-colour (red/blue/green/yellow) brand spinner that
+   clashes with the accent colour; this is a single-accent arc on a faint track,
+   centred in the viewport. */
+.km-loading {
+  min-height: 60vh;
+}
+
+.km-loading > p:first-of-type {
+  letter-spacing: -0.01em;
+  margin-bottom: 0.15rem;
+}
+
+.loader {
+  position: relative;
+  margin: 0 auto;
+  width: var(--loading-width, 88px);
+}
+
+.loader:before {
+  content: "";
+  display: block;
+  padding-top: 100%;
+}
+
+.showbox {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.showbox::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  border: 3px solid color-mix(in oklab, var(--gray-12) 13%, transparent);
+}
+
+.circular {
+  animation: rotate 1.8s linear infinite;
+  height: 100%;
+  transform-origin: center center;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+.path {
+  stroke: var(--accent-9);
+  stroke-dasharray: 1, 200;
+  stroke-dashoffset: 0;
+  animation: dash 1.4s ease-in-out infinite;
+  stroke-linecap: round;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -35px;
+  }
+  100% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -124px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .circular {
+    animation-duration: 4s;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Reduced motion — always on, whatever the section switches say.
+   -------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   .km-node-list > *,
   .km-top-card {
@@ -574,5 +970,11 @@ body,
   .km-top-card:hover,
   .km-navbar-controls > *:hover {
     transform: none;
+  }
+
+  .theme-root::after,
+  .km-layout::before,
+  .km-layout::after {
+    animation: none;
   }
 }
