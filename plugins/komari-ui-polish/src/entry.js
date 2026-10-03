@@ -104,7 +104,7 @@ var DEFAULTS = {
   ambientIntensity: "standard",
   auroraMotion: true,
   grain: true,
-  cardOpacity: 86,
+  cardBoost: 80,
 };
 
 /**
@@ -159,9 +159,9 @@ function resolve(raw) {
   if (!INTENSITY[config.ambientIntensity]) config.ambientIntensity = "standard";
   config.backgroundBlur = clamp(number(config.backgroundBlur, 0), 0, 60);
   config.backgroundDim = clamp(number(config.backgroundDim, 18), 0, 85);
-  // 100 = the opaque panel step, 40 = clearly glassy. Below that the text starts
-  // to lose to whatever artwork is behind it, so it is clamped rather than trusted.
-  config.cardOpacity = clamp(number(config.cardOpacity, 86), 40, 100);
+  // How much the card surface is pushed towards the opaque panel step: 0 keeps the
+  // app's own surface, 100 makes it fully opaque.
+  config.cardBoost = clamp(number(config.cardBoost, 80), 0, 100);
 
   return config;
 }
@@ -233,7 +233,7 @@ function tokenBlock(config) {
     "  --km-ambient-a1: " + intensity[0] + "%;",
     "  --km-ambient-a2: " + intensity[1] + "%;",
     "  --km-bg-dim: " + config.backgroundDim + "%;",
-    "  --km-panel-alpha: " + config.cardOpacity + "%;",
+    "  --km-panel-boost: " + config.cardBoost + "%;",
     "  --km-bg-blur: " + config.backgroundBlur + "px;",
   );
 

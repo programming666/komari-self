@@ -10,7 +10,7 @@
 
 ```
 short      ui-polish
-version    1.1.1
+version    1.1.2
 权限        allowHTMLInject（仅此项）
 入口        script.js
 来源        src/entry.js + src/ui-polish.css
@@ -43,7 +43,7 @@ version    1.1.1
 5. **表格升级**：半透明吸顶表头 + 强调色底，行悬停反馈。
 6. **光晕动效**：三团超大的模糊色晕缓慢漂移，只动 `transform`，因此全部留在合成层上；
    关掉即静态，系统开启「减少动态效果」时也自动静态。
-7. **卡片表面补底（1.1.1）**：原版卡片是半透明的（亮色 70% 白，**暗色只有约 4% 白**），在纯色底上正常，一换成照片暗色卡片就几乎消失。插件接管背景时把卡片表面补到 `cardOpacity`（默认 86%）指向的不透明度，照片仍会从卡片缝隙与毛玻璃里透出来。
+7. **卡片表面补底（1.1.2）**：原版卡片是半透明的（亮色 70% 白，**暗色只有约 4% 白**），在纯色底上正常，一换成照片暗色卡片就几乎消失。插件接管背景时按 `cardBoost`（默认 80%）把卡片表面朝不透明面板色混合：只加不透明、不会减少，本来就实心的表面保持原样；照片仍会从卡片缝隙与毛玻璃里透出来。
 
 ## 背景：五档模式
 
@@ -89,7 +89,7 @@ version    1.1.1
 | | `backgroundFit` | select | `cover` | `cover` / `contain` / `repeat` |
 | | `backgroundBlur` | number | 0 | 背景模糊 0–60 px |
 | | `backgroundDim` | number | 18 | 背景调暗 0–85% |
-| | `cardOpacity` | number | 86 | **卡片不透明度** 40–100：原版面板本身半透明（亮色 70% 白、暗色约 4%），换成照片后内容会被背景吃掉，这里补回来；100 完全不透明，越低越通透 |
+| | `cardBoost` | number | 80 | **卡片补底强度** 0–100：原版面板本身半透明（亮色 70% 白、暗色约 4%），换成照片后内容会被背景吃掉；这里把卡片表面朝不透明面板色混合——0 = 完全沿用原版表面，100 = 完全不透明。只加不透明，不会减少 |
 | | `ambientIntensity` | select | `standard` | 氛围浓度：`subtle` / `standard` / `strong` |
 | | `auroraMotion` | switch | 开 | 光晕是否流动 |
 | | `grain` | switch | 开 | 颗粒质感 |
@@ -105,8 +105,8 @@ version    1.1.1
 
 ### 1. 后台上传（推荐）
 
-从 [Releases](https://github.com/programming666/komari-self/releases) 下载 `ui-polish-1.1.1.zip`
-（或直接用仓库里的 `plugins/komari-ui-polish/dist/ui-polish-1.1.1.zip`），
+从 [Releases](https://github.com/programming666/komari-self/releases) 下载 `ui-polish-1.1.2.zip`
+（或直接用仓库里的 `plugins/komari-ui-polish/dist/ui-polish-1.1.2.zip`），
 后台 → **插件** → 上传插件。
 
 打开插件开关时会弹出 **Permission required** 对话框，里面**只有一项** ——
@@ -181,7 +181,7 @@ komari-ui-polish/
 ├── icon.svg
 ├── README.md
 └── dist/
-    └── ui-polish-1.1.1.zip   # 可上传的安装包
+    └── ui-polish-1.1.2.zip   # 可上传的安装包
 ```
 
 改动样式或逻辑后重新构建：
@@ -211,7 +211,7 @@ node scripts/build-plugin.mjs
 | 数字 | `tabular-nums` |
 | 自定义背景 | 裸 URL 被包成 `url("data:image/png;base64,…")`；`linear-gradient(120deg,…)` 原样生效；`picsum.photos` 图片按 cover 铺满；`repeat` 时 `auto/repeat` |
 | 开关 | 关总开关→图层消失；关光晕动效→`animation-name: none` 但仍绘制；关颗粒→SVG 层消失而渐变仍在 |
-| 卡片表面（照片背景，亮 / 暗） | `oklab(… / 0.86)` 两边一致（原版为 0.70 / 0.035），文字对比度恢复 |
+| 卡片表面（照片背景，亮 / 暗） | 由原版的 0.70 / 0.035 提升到 0.94 / 0.81（只加不减），文字对比度恢复 |
 | 恢复默认 | 注入字节数与初始**逐字节一致** |
 
 市场安装链路（本机无直连公网，走 socks5 代理）也已跑通：把上面的 `v1.json` 添加为市场来源后，
@@ -231,7 +231,7 @@ Linux 检出里构建得到同一个 zip 与同一个哈希。提交前可自查
 
 ```
 $ node scripts/build-plugin.mjs --check
-ui-polish 1.1.1 — consistency check
+ui-polish 1.1.2 — consistency check
   rebuilt  <sha256>
   dist     <sha256>  ok
   catalog  <sha256>  ok

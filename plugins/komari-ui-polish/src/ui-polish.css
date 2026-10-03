@@ -227,14 +227,18 @@ body,
 /* The app paints card surfaces with a translucent panel colour — 70% white in
    light mode, and in dark mode white at 3.5%, which is very nearly nothing. That
    reads fine over a flat canvas, but over artwork the content loses its contrast
-   (dark-mode cards all but vanish into a photo). While the plugin owns the
-   background, the card surface is topped up towards the opaque panel step; the
-   `cardOpacity` setting decides how much of it comes back. */
+   (dark-mode cards all but vanish into a photo).
+
+   So while the plugin owns the background, the card surface is mixed towards the
+   opaque panel step. Mixing *with* the app's own value rather than replacing it
+   means a surface that is already opaque stays opaque — the mix can only add
+   opacity, never take it away. `cardBoost` is how much of it is added: 0 leaves
+   the app's surface exactly as it is. */
 .rt-BaseCard:is(.rt-variant-surface)::before {
   background-color: color-mix(
     in oklab,
-    var(--color-panel-solid) var(--km-panel-alpha, 86%),
-    transparent
+    var(--color-panel-solid) var(--km-panel-boost, 80%),
+    var(--card-background-color, var(--color-panel-solid))
   );
 }
 

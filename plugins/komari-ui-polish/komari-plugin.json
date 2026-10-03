@@ -16,7 +16,7 @@
     "en": "programming666",
     "zh-CN": "programming666"
   },
-  "version": "1.1.1",
+  "version": "1.1.2",
   "url": "https://github.com/programming666/komari-self",
   "icon": "icon.svg",
   "komari": ">=0.0.1",
@@ -263,18 +263,18 @@
         }
       },
       {
-        "key": "cardOpacity",
+        "key": "cardBoost",
         "type": "number",
-        "default": 86,
+        "default": 80,
         "name": {
-          "en": "Card opacity (%)",
-          "zh-CN": "卡片不透明度（%）",
-          "ja": "カードの不透明度（%）"
+          "en": "Card surface top-up (%)",
+          "zh-CN": "卡片补底强度（%）",
+          "ja": "カード表面の補正（%）"
         },
         "help": {
-          "en": "40 to 100. How opaque card surfaces are while the plugin paints the background. The stock panels are translucent (70% white in light mode, ~4% in dark), which reads fine on a flat canvas but lets a photo swallow the content, so they are topped up here: 100 = solid, lower = glassier.",
-          "zh-CN": "40–100。插件接管背景时卡片表面的不透明度。原版面板本身是半透明的（亮色 70% 白，暗色约 4%），在纯色底上没问题，但换成照片后内容会被背景吃掉，所以这里把它补回来：100 = 完全不透明，数值越低越通透。",
-          "ja": "40〜100。プラグインが背景を描くときのカード表面の不透明度。100 で完全不透明、下げるほどガラス風になります。"
+          "en": "0 to 100. The stock panels are translucent (70% white in light mode, ~4% in dark), which reads fine on a flat canvas but lets a photo swallow the content. While the plugin paints the background the card surface is mixed towards the opaque panel step by this much: 0 leaves the app's own surface untouched, 100 makes it fully opaque, 80 (default) keeps a hint of the artwork. It can only add opacity, never reduce it.",
+          "zh-CN": "0–100。原版面板本身是半透明的（亮色 70% 白，暗色约 4%），在纯色底上没问题，但换成照片后内容会被背景吃掉。插件接管背景时按这个比例把卡片表面朝「不透明面板色」混合：0 = 完全沿用原版表面，100 = 完全不透明，默认 80 保留一点背景的透出感。只会加不透明，不会减少。",
+          "ja": "0〜100。プラグインが背景を描くときのカード表面の補正量。0 でアプリ本来の表面、100 で完全不透明、既定は 80 です。"
         }
       },
       {
