@@ -16,7 +16,7 @@
     "en": "programming666",
     "zh-CN": "programming666"
   },
-  "version": "1.1.0",
+  "version": "1.1.1",
   "url": "https://github.com/programming666/komari-self",
   "icon": "icon.svg",
   "komari": ">=0.0.1",
@@ -260,6 +260,21 @@
           "en": "0 to 85. Veils the artwork — white in light mode, black in dark mode — so text keeps its contrast over any picture. Raise it if a busy photo makes the page hard to read; lower it for more of the picture.",
           "zh-CN": "0–85。给背景蒙一层纱（亮色为白、暗色为黑），使文字在任何图片上都有足够对比度。照片太花看不清时就调大，想看更多画面就调小。",
           "ja": "0〜85。ライトでは白、ダークでは黒のベールを重ねて文字の可読性を保ちます。"
+        }
+      },
+      {
+        "key": "cardOpacity",
+        "type": "number",
+        "default": 86,
+        "name": {
+          "en": "Card opacity (%)",
+          "zh-CN": "卡片不透明度（%）",
+          "ja": "カードの不透明度（%）"
+        },
+        "help": {
+          "en": "40 to 100. How opaque card surfaces are while the plugin paints the background. The stock panels are translucent (70% white in light mode, ~4% in dark), which reads fine on a flat canvas but lets a photo swallow the content, so they are topped up here: 100 = solid, lower = glassier.",
+          "zh-CN": "40–100。插件接管背景时卡片表面的不透明度。原版面板本身是半透明的（亮色 70% 白，暗色约 4%），在纯色底上没问题，但换成照片后内容会被背景吃掉，所以这里把它补回来：100 = 完全不透明，数值越低越通透。",
+          "ja": "40〜100。プラグインが背景を描くときのカード表面の不透明度。100 で完全不透明、下げるほどガラス風になります。"
         }
       },
       {

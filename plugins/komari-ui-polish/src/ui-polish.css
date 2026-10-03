@@ -223,6 +223,21 @@ body,
   --km-scrim-rgb: 0 0 0;
 }
 
+/* @section:bgReadability */
+/* The app paints card surfaces with a translucent panel colour — 70% white in
+   light mode, and in dark mode white at 3.5%, which is very nearly nothing. That
+   reads fine over a flat canvas, but over artwork the content loses its contrast
+   (dark-mode cards all but vanish into a photo). While the plugin owns the
+   background, the card surface is topped up towards the opaque panel step; the
+   `cardOpacity` setting decides how much of it comes back. */
+.rt-BaseCard:is(.rt-variant-surface)::before {
+  background-color: color-mix(
+    in oklab,
+    var(--color-panel-solid) var(--km-panel-alpha, 86%),
+    transparent
+  );
+}
+
 /* Base geometry for the drifting clouds (aurora mode). They are decorative only,
    so they must never swallow clicks. */
 .theme-root::after,

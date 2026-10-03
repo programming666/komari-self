@@ -104,6 +104,7 @@ var DEFAULTS = {
   ambientIntensity: "standard",
   auroraMotion: true,
   grain: true,
+  cardOpacity: 86,
 };
 
 /**
@@ -158,6 +159,9 @@ function resolve(raw) {
   if (!INTENSITY[config.ambientIntensity]) config.ambientIntensity = "standard";
   config.backgroundBlur = clamp(number(config.backgroundBlur, 0), 0, 60);
   config.backgroundDim = clamp(number(config.backgroundDim, 18), 0, 85);
+  // 100 = the opaque panel step, 40 = clearly glassy. Below that the text starts
+  // to lose to whatever artwork is behind it, so it is clamped rather than trusted.
+  config.cardOpacity = clamp(number(config.cardOpacity, 86), 40, 100);
 
   return config;
 }
@@ -229,6 +233,7 @@ function tokenBlock(config) {
     "  --km-ambient-a1: " + intensity[0] + "%;",
     "  --km-ambient-a2: " + intensity[1] + "%;",
     "  --km-bg-dim: " + config.backgroundDim + "%;",
+    "  --km-panel-alpha: " + config.cardOpacity + "%;",
     "  --km-bg-blur: " + config.backgroundBlur + "px;",
   );
 
@@ -257,6 +262,9 @@ function pickSections(sections, config) {
     wanted.push("backdrop");
     wanted.push(MODES[config.background]);
     if (config.grain !== false) wanted.push("grain");
+    // Solid mode is a flat surface: the app's own translucent panels read fine
+    // there, so the card top-up only ships with real artwork behind it.
+    if (config.background !== "solid") wanted.push("bgReadability");
     if (config.background === "aurora" && config.auroraMotion !== false) {
       wanted.push("auroraMotion");
     }
